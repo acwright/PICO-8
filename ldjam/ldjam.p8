@@ -39,7 +39,9 @@ end
 --game
 
 function init_game()
-	init_rooms()
+	door_sprite=49
+	
+	init_level1()
 	
 	player=init_player()
 	room=rooms[1]
@@ -143,19 +145,19 @@ function init_player()
 			end
 			
 			if self.x<-8 then
-				room=rooms[room.west]
+				room=rooms[room.dirs[1]]
 				self.x=128
 			end
 			if self.x>128 then
-				room=rooms[room.east]
+				room=rooms[room.dirs[2]]
 				self.x=0 
 			end
 			if self.y<-8 then
-				room=rooms[room.south]
+				room=rooms[room.dirs[3]]
 				self.y=128 
 			end
 			if self.y>128 then
-				room=rooms[room.north]
+				room=rooms[room.dirs[4]]
 				self.y=-8 
 			end
 		end,
@@ -165,23 +167,41 @@ function init_player()
 	}
 end
 
-function init_rooms()
+function init_level1()
 	rooms={}
-	add(rooms,{
+	
+	local room_0=init_room()
+	room_0.mapn=0
+	room_0.dirs={1,1,2,2}
+	room_0.items={
+		init_item(3,2,37),
+		init_item(7,15,49),
+		init_item(8,15,49),
+		init_item(10,11,38)
+	}
+	
+	local room_1=init_room()
+	room_1.mapn=0
+	room_1.dirs={1,2,2,1}
+	room_1.items={
+		init_item(3,2,37),
+		init_item(7,15,49),
+		init_item(8,15,49),
+		init_enemy(10,11,39)
+	}
+	
+	add(rooms,room_0)
+	add(rooms,room_1)
+end
+
+function init_room()
+	return {
 		mapn=0,
-		north=2,
-		west=2,
-		south=1,
-		east=1,
-		items={
-			init_item(3,2,37),
-			init_item(7,15,49),
-			init_item(8,15,49),
-			init_item(10,11,38)
-		},
+		dirs={},
+		items={},
 		unlock=function(self)
 			for item in all(self.items) do
- 			if item.sprite==49 then
+ 			if item.sprite==door_sprite then
   			del(self.items,item)
  			end
 			end
@@ -197,33 +217,7 @@ function init_rooms()
 				item:draw()
 			end
 		end
-	})
-	add(rooms,{
-		mapn=0,
-		north=2,
-		west=2,
-		south=1,
-		east=1,
-		items={
-			init_item(2,13,37),
-			init_item(5,5,37),
-			init_enemy(6,6,39)
-		},
-		unlock=function(self)
-		
-		end,
-		update=function(self)
-			for item in all(self.items) do
-				item:update()
-			end
-		end,
-		draw=function(self)
-			map(self.mapn)
-			for item in all(self.items) do
-				item:draw()
-			end
-		end
-	})
+	}
 end
 
 function init_item(x,y,sprite)
