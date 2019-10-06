@@ -340,6 +340,37 @@ function init_player()
 	}
 end
 
+function init_level1()
+	rooms={}
+
+	local room_0=init_room()
+	room_0.mapn=0
+	room_0.dirs={1,1,2,2}
+	room_0.items={
+		init_item(3,2,16),
+		init_item(7,15,6),
+		init_item(8,15,7),
+		init_item(12,10,38),
+		init_item(13,12,48),
+		init_item(4,3,49),
+		init_item(6,2,50),
+		init_item(8,1,51)
+	}
+
+	local room_1=init_room()
+	room_1.mapn=0
+	room_1.dirs={1,2,2,1}
+	room_1.items={
+		init_item(3,5,16),
+		init_item(4,11,32),
+		init_item(14,14,32),
+		init_enemy(10,11,96)
+	}
+
+	add(rooms,room_0)
+	add(rooms,room_1)
+end
+
 function init_room()
 	return {
 		mapn=0,
