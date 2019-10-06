@@ -247,7 +247,7 @@ function init_player()
 				end
 			end
 			if self.x>128 then
-				local next_dir=lroom.dirs[2]
+				local next_dir=room.dirs[2]
 				if next_dir then
 					room=rooms[next_dir+1]
 					self.x=-8
