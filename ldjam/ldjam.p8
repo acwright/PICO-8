@@ -124,6 +124,7 @@ end
 --objects
 
 function init_player()
+	local timer=10
 	return {
 		x=63,
 		y=63,
@@ -136,7 +137,8 @@ function init_player()
 		flip_y=false,
 		o_sprite=24,
 		sprite=24,
-		frame=0,
+		sprite_frame=0,
+		sprite_timer=timer,
 		level=1,
 		health=4,
 		max_health=0,
@@ -212,10 +214,12 @@ function init_player()
 				self.flip_y=false
 			end
 
-			--frame
-			if (self.frame>3) self.frame=0
-			self.sprite=self.o_sprite+self.frame
-			self.frame+=1
+			-- sprite_timer
+			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
+			self.sprite_timer-=1
+			--sprite_frame
+			if (self.sprite_frame>3) self.sprite_frame=0
+			self.sprite=self.o_sprite+self.sprite_frame
 
 			--effects
 			--switch
@@ -361,9 +365,11 @@ function init_enemy(x,y,sprite)
 end
 
 function init_wave(x,y,v_x,v_y,life)
+	local timer=8
 	return {
 		sprite=13,
 		alt_sprite=false,
+		sprite_timer=timer,
 		x=x,
 		y=y,
 		v=3,
@@ -375,27 +381,34 @@ function init_wave(x,y,v_x,v_y,life)
 		update=function(self)
 			self.x+=(self.v*self.v_x)
 			self.y+=(self.v*self.v_y)
-		 self.life-=1
-			if self.alt_sprite then
-				self.sprite=13
-				self.alt_sprite=false
-			else
-				self.alt_sprite=true
-				if self.v_x == 1 then
-					self.sprite=15
-				elseif self.v_x == -1 then
-					self.sprite=15
-					self.flip_x=true
-				elseif self.v_y == 1 then
-					self.sprite=14
-					self.flip_y=true
+			--alternate sprite
+			if self.sprite_timer<=0 then
+				self.sprite_timer=timer
+				if self.alt_sprite then
+					self.sprite=13
+					self.alt_sprite=false
 				else
-					self.sprite=14
+					self.alt_sprite=true
+					if self.v_x == 1 then
+						self.sprite=15
+					elseif self.v_x == -1 then
+						self.sprite=15
+						self.flip_x=true
+					elseif self.v_y == 1 then
+						self.sprite=14
+						self.flip_y=true
+					else
+						self.sprite=14
+					end
 				end
 			end
-			if self.life==0 then
+			self.sprite_timer-=1
+
+			--life
+			if self.life<=0 then
 				del(waves,self)
 			end
+			self.life-=1
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
