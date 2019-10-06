@@ -118,6 +118,11 @@ function mhit(mapn,obj,flag)
 	local x2=(obj.x+obj.w-1)/8
 	local y2=(obj.y+obj.h-1)/8
 
+	if (x1<0) x1=0
+	if (y1<0) y1=0
+	if (x2<0) x2=0
+	if (y2<0) y2=0
+
 	if (mapn>=8) y1+=16 y2+=16 mapn-=8
 	x1+=16*mapn x2+=16*mapn
 
@@ -125,6 +130,9 @@ function mhit(mapn,obj,flag)
 	local b=fget(mget(x1,y2),flag)
 	local c=fget(mget(x2,y2),flag)
 	local d=fget(mget(x2,y1),flag)
+
+	a=false
+	b=false
 
  hit=a or b or c or d
  return hit
