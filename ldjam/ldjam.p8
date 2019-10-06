@@ -382,17 +382,21 @@ function init_player()
 			for i=1,self.health do
 				health=health..'♥'
 			end
-			print(health,1,1,8)
+			print(health,0,0,8)
 			local energy=''
 			for i=1,self.energy do
 				energy=energy..'◆'
 			end
-			print(energy,1,8,12)
+			print(energy,0,8,12)
 			local collect=''
-			for i=1,self.collectables do
-				collect=collect..'★'
+			for i=4,0,-1 do
+				if self.collectables>=i then
+					collect=collect..'★'
+				else
+					collect=collect..'  '
+				end
 			end
-			print(collect,1,15,9)
+			print(collect,96,0,9)
 			--print('     energy',8,8,8)
 		end
 	}
