@@ -152,7 +152,7 @@ function init_player()
 				-- self.v_x=-1
 				self.holding.left+=1
 				if (mhit(self,1)) self.x=lx
-				for item in all(room.items) do
+				for item in all(level.room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
 							self.x=lx
 						end
@@ -169,7 +169,7 @@ function init_player()
 				-- self.v_x=1
 				self.holding.right+=1
 				if (mhit(self,1)) self.x=lx
-				for item in all(room.items) do
+				for item in all(level.room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
 							self.x=lx
 						end
@@ -189,7 +189,7 @@ function init_player()
 				-- self.v_y=-1
 				self.holding.up+=1
 				if (mhit(self,1)) self.y=ly
-				for item in all(room.items) do
+				for item in all(level.room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
 							self.y=ly
 						end
@@ -206,7 +206,7 @@ function init_player()
 				-- self.v_y=1
 				self.holding.down+=1
 				if (mhit(self,1)) self.y=ly
-				for item in all(room.items) do
+				for item in all(level.room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
 							self.y=ly
 						end
