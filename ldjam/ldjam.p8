@@ -136,13 +136,16 @@ function init_player()
 		level=4,
 		health=60,
 		energy=60,
+		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
 			local lx=self.x
 			local ly=self.y
+
 			if btn(0) then
-				self.sprite=11
-				self.flip_x=true
 				self.x-=self.v
+				self.holding.left+=1
+				-- self.sprite=11
+				-- self.flip_x=true
 				if (mhit(self,1)) self.x=lx
 				for item in all(room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
@@ -152,10 +155,14 @@ function init_player()
 							room:unlock()
 						end
 				end
+			else
+				--no longer holding
+				self.holding.left=0
 			end
 			if btn(1) then
-				self.sprite=11
-				self.flip_x=false
+				-- self.sprite=11
+				-- self.flip_x=false
+				self.holding.right+=1
 				self.x+=self.v
 				if (mhit(self,1)) self.x=lx
 				for item in all(room.items) do
@@ -166,10 +173,14 @@ function init_player()
 							room:unlock()
 						end
 				end
+			else
+				--no longer holding
+				self.holding.right=0
 			end
 			if btn(2) then
-				self.sprite=10
-				self.flip_y=false
+				-- self.sprite=10
+				-- self.flip_y=false
+				self.holding.up+=1
 				self.y-=self.v
 				if (mhit(self,1)) self.y=ly
 				for item in all(room.items) do
@@ -180,10 +191,14 @@ function init_player()
 							room:unlock()
 						end
 				end
+			else
+					--no longer holding
+					self.holding.up=0
 			end
 			if btn(3) then
-				self.sprite=10
-				self.flip_y=true
+				-- self.sprite=10
+				-- self.flip_y=true
+				self.holding.down+=1
 				self.y+=self.v
 				if (mhit(self,1)) self.y=ly
 				for item in all(room.items) do
@@ -194,6 +209,23 @@ function init_player()
 							room:unlock()
 						end
 				end
+			else
+				--no longer holding
+				self.holding.down=0
+			end
+
+			if (self.holding.left>self.holding.right) and (self.holding.left>self.holding.up) and (self.holding.left>self.holding.down) then
+				self.sprite=11
+				self.flip_x=true
+			elseif (self.holding.right>self.holding.up) and (self.holding.right>self.holding.down) then
+				self.sprite=11
+				self.flip_x=false
+			elseif (self.holding.up>self.holding.down) then
+				self.sprite=10
+				self.flip_y=false
+			elseif (self.holding.down>0) then
+				self.sprite=10
+				self.flip_y=true
 			end
 
 			if self.x<-4 then
