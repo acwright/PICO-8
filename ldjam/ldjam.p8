@@ -62,11 +62,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-<<<<<<< HEAD
 	room=rooms[5]
-=======
-	room=rooms[140]
->>>>>>> 47ea79fecba0c6e21aa30c04fc06ea027f8d6e0e
 
 	player=init_player()
 	waves={}
