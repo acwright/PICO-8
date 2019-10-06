@@ -62,7 +62,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[19]
+	room=rooms[5]
 
 	player=init_player()
 	waves={}
@@ -183,6 +183,7 @@ function init_player()
 		rest=0,
 		rest_period=20,
 		locked=false,
+		collectables=0,
 		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
 
@@ -275,13 +276,12 @@ function init_player()
 			--effects
 			--switch
 			if (hit(self,2)) room:unlock()
-			--level_up
-			local level_up=hit(self,4)
-			if level_up then
-				self.level+=1
-				self.energy+=1
-				self.max_energy+=1
-				del(room.items,level_up)
+			--pickup
+			local pickup=hit(self,4)
+			if pickup then
+				if (pickup.powerup) self.level+=1 self.energy+=1 self.max_energy+=1
+				if (pickup.collectable) self.collectables+=1
+				del(room.items,pickup)
 			end
 			--heal
 			if (hit(self,6) and self.health<=4) self.health=4
@@ -388,6 +388,11 @@ function init_player()
 				energy=energy..'◆'
 			end
 			print(energy,1,8,12)
+			local collect=''
+			for i=1,self.collectables do
+				collect=collect..'★'
+			end
+			print(collect,1,15,9)
 			--print('     energy',8,8,8)
 		end
 	}
@@ -528,6 +533,41 @@ function init_down_elevator(room)
 		end
 	}
 end
+
+function init_powerup(x,y,sprite)
+	return {
+		x=x*8,
+		y=y*8,
+		w=8,
+		h=8,
+		sprite=sprite,
+		powerup=true,
+		update=function(self)
+
+		end,
+		draw=function(self)
+			spr(self.sprite,self.x,self.y)
+		end
+	}
+end
+
+function init_collectable(x,y,sprite)
+	return {
+		x=x*8,
+		y=y*8,
+		w=8,
+		h=8,
+		sprite=sprite,
+		collectable=true,
+		update=function(self)
+
+		end,
+		draw=function(self)
+			spr(self.sprite,self.x,self.y)
+		end
+	}
+end
+
 -->8
 --rooms
 
@@ -583,7 +623,12 @@ function init_rooms()
 	local room_1=init_room(12,{nil,nil,nil,3},{})
 	local room_2=init_room(3,{nil,nil,0,4},{})
 	local room_3=init_room(3,{nil,nil,1,7},{})
-	local room_4=init_room(9,{nil,5,2,nil},{})
+	local room_4=init_room(9,{nil,5,2,nil},{
+		init_collectable(2,2,52),
+		init_collectable(13,2,53),
+		init_collectable(13,13,54),
+		init_collectable(2,13,55)
+	})
 	local room_5=init_room(2,{4,6,nil,nil},{})
 	local room_6=init_room(2,{5,7,nil,nil},{})
 	local room_7=init_room(6,{6,8,3,nil},{})
@@ -1122,7 +1167,7 @@ c000000000000000000000000000000cc000000000000000000000000000000c0000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 c000000000000000000000000000000cc000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000
 __gff__
-0002020202020a0a02020202020000000202000202020a0a0000000000000000800202020000044000000000000000001010101002020202010101010101010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0002020202020a0a02020202020000000202000202020a0a0000000000000000800202020000044000000000000000001010101010101010010101010101010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 0102020202020412120502020202020301020202020204121205020202020203010202020202020202020202020202030102020202031112121301020202020301020202020202020202020202020203010202020202041212130102020202030102020202020412120502020202020301020202020311121205020202020203
