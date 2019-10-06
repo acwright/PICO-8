@@ -87,20 +87,24 @@ end
 -->8
 --helpers
 
-function mhit(obj,flag)
+function mhit(mapn,obj,flag)
 	local hit=false
+
 
 	local x1=obj.x/8
 	local y1=obj.y/8
 	local x2=(obj.x+obj.w-1)/8
 	local y2=(obj.y+obj.h-1)/8
+
+	if (mapn>=8) y1+=16 y2+=16 mapn-=8
+	x1+=16*mapn x2+=16*mapn
+
 	local a=fget(mget(x1,y1),flag)
 	local b=fget(mget(x1,y2),flag)
 	local c=fget(mget(x2,y2),flag)
 	local d=fget(mget(x2,y1),flag)
 
  hit=a or b or c or d
-
  return hit
 end
 
@@ -163,38 +167,42 @@ function init_player()
 			local lx=self.x
 			local ly=self.y
 
+			--left
 			if btn(0) then
 				self.x-=self.v
 				self.holding.left+=1
-				if (mhit(self,1) or hit(self,1)) self.x=lx
 			else
 				--no longer holding
 				self.holding.left=0
 			end
+			--right
 			if btn(1) then
 				self.x+=self.v
 				self.holding.right+=1
-				if (mhit(self,1) or hit(self,1)) self.x=lx
 			else
 				--no longer holding
 				self.holding.right=0
 			end
+			if (mhit(room.mapn,self,1) or hit(self,1)) self.x=lx
+
+			--up
 			if btn(2) then
 				self.y-=self.v
 				self.holding.up+=1
-				if (mhit(self,1) or hit(self,1)) self.y=ly
 			else
 					--no longer holding
 					self.holding.up=0
 			end
+			--down
 			if btn(3) then
 				self.y+=self.v
 				self.holding.down+=1
-				if (mhit(self,1) or hit(self,1)) self.y=ly
 			else
 				--no longer holding
 				self.holding.down=0
 			end
+			if (mhit(room.mapn,self,1) or hit(self,1)) self.y=ly
+
 			--longest held direction
 			if (self.holding.left>self.holding.right) and (self.holding.left>self.holding.up) and (self.holding.left>self.holding.down) then
 				--left
@@ -359,7 +367,7 @@ function init_enemy(x,y,sprite)
 		update=function(self)
 			self.x+=self.vx
 			self.y+=self.vy
-			if(mhit(self,1)) self.vx=-self.vx self.vy=-self.vy
+			if(mhit(room.mapn,self,1)) self.vx=-self.vx self.vy=-self.vy
 
 			-- sprite_timer
 			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
