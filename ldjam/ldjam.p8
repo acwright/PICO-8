@@ -112,7 +112,6 @@ end
 function mhit(mapn,obj,flag)
 	local hit=false
 
-
 	local x1=obj.x/8
 	local y1=obj.y/8
 	local x2=(obj.x+obj.w-1)/8
@@ -122,6 +121,10 @@ function mhit(mapn,obj,flag)
 	if (y1<0) y1=0
 	if (x2<0) x2=0
 	if (y2<0) y2=0
+	if (x1>15) x1=15
+	if (y1>15) y1=15
+	if (x2>15) x2=15
+	if (y2>15) y2=15
 
 	if (mapn>=8) y1+=16 y2+=16 mapn-=8
 	x1+=16*mapn x2+=16*mapn
@@ -130,9 +133,6 @@ function mhit(mapn,obj,flag)
 	local b=fget(mget(x1,y2),flag)
 	local c=fget(mget(x2,y2),flag)
 	local d=fget(mget(x2,y1),flag)
-
-	a=false
-	b=false
 
  hit=a or b or c or d
  return hit
@@ -351,6 +351,7 @@ function init_player()
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
 			local health=''
+			mhit(room.mapn,self,1)
 			for i=1,self.health do
 				health=health..'♥'
 			end
