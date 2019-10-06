@@ -62,7 +62,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[125]
+	room=rooms[140]
 
 	player=init_player()
 	waves={}
@@ -941,43 +941,131 @@ function init_rooms()
 	--level 5
 
 	local room_139=init_room(1,{nil,140,nil,145},{
-		init_down_elevator(132)
+		init_item(0,6,17),
+		init_item(0,7,17),
+		init_item(0,8,17),
+		init_item(0,9,17),
+		init_item(6,0,2),
+		init_item(7,0,2),
+		init_item(8,0,2),
+		init_item(9,0,2),
+		init_down_elevator(102)
 	})
-	local room_140=init_room(0,{139,141,nil,146},{})
-	local room_141=init_room(0,{140,142,nil,147},{})
-	local room_142=init_room(0,{141,143,nil,148},{})
-	local room_143=init_room(0,{142,144,nil,149},{})
-	local room_144=init_room(0,{143,nil,nil,150},{})
-	local room_145=init_room(0,{nil,146,139,151},{})
+	local room_140=init_room(0,{139,141,nil,146},{
+		init_item(6,0,2),
+		init_item(7,0,2),
+		init_item(8,0,2),
+		init_item(9,0,2)
+	})
+	local room_141=init_room(0,{140,142,nil,147},{
+		init_item(6,0,2),
+		init_item(7,0,2),
+		init_item(8,0,2),
+		init_item(9,0,2)
+	})
+	local room_142=init_room(0,{141,143,nil,148},{
+		init_item(6,0,2),
+		init_item(7,0,2),
+		init_item(8,0,2),
+		init_item(9,0,2)
+	})
+	local room_143=init_room(0,{142,144,nil,149},{
+		init_item(6,0,2),
+		init_item(7,0,2),
+		init_item(8,0,2),
+		init_item(9,0,2)
+	})
+	local room_144=init_room(8,{143,nil,nil,150},{})
+	local room_145=init_room(0,{nil,146,139,151},{
+		init_item(0,6,17),
+		init_item(0,7,17),
+		init_item(0,8,17),
+		init_item(0,9,17)
+	})
 	local room_146=init_room(0,{145,147,140,152},{})
 	local room_147=init_room(0,{146,148,141,153},{})
 	local room_148=init_room(0,{147,149,142,154},{})
 	local room_149=init_room(0,{148,150,143,155},{})
-	local room_150=init_room(0,{149,nil,144,156},{})
-	local room_151=init_room(0,{nil,152,145,157},{})
+	local room_150=init_room(0,{149,nil,144,156},{
+		init_item(15,6,19),
+		init_item(15,7,19),
+		init_item(15,8,19),
+		init_item(15,9,19)
+	})
+	local room_151=init_room(0,{nil,152,145,157},{
+		init_item(0,6,17),
+		init_item(0,7,17),
+		init_item(0,8,17),
+		init_item(0,9,17)
+	})
 	local room_152=init_room(0,{151,153,146,158},{})
 	local room_153=init_room(0,{152,154,147,159},{})
 	local room_154=init_room(0,{153,155,148,160},{})
 	local room_155=init_room(0,{154,156,149,161},{})
-	local room_156=init_room(0,{155,nil,150,162},{})
-	local room_157=init_room(0,{nil,158,151,163},{})
+	local room_156=init_room(0,{155,nil,150,162},{
+		init_item(15,6,19),
+		init_item(15,7,19),
+		init_item(15,8,19),
+		init_item(15,9,19)
+	})
+	local room_157=init_room(0,{nil,158,151,163},{
+		init_item(0,6,17),
+		init_item(0,7,17),
+		init_item(0,8,17),
+		init_item(0,9,17)
+	})
 	local room_158=init_room(0,{157,159,152,164},{})
 	local room_159=init_room(0,{158,160,153,165},{})
-	local room_160=init_room(15,{159,161,154,166},{})
+	local room_160=init_room(0,{159,161,154,166},{})
 	local room_161=init_room(0,{160,162,155,167},{})
-	local room_162=init_room(0,{161,nil,156,168},{})
-	local room_163=init_room(0,{nil,164,157,169},{})
+	local room_162=init_room(0,{161,nil,156,168},{
+		init_item(15,6,19),
+		init_item(15,7,19),
+		init_item(15,8,19),
+		init_item(15,9,19)
+	})
+	local room_163=init_room(0,{nil,164,157,169},{
+		init_item(0,6,17),
+		init_item(0,7,17),
+		init_item(0,8,17),
+		init_item(0,9,17)
+	})
 	local room_164=init_room(0,{163,165,158,170},{})
 	local room_165=init_room(0,{164,166,159,171},{})
 	local room_166=init_room(0,{165,167,160,172},{})
 	local room_167=init_room(0,{166,168,161,173},{})
-	local room_168=init_room(0,{167,nil,162,174},{})
-	local room_169=init_room(0,{nil,170,163,nil},{})
-	local room_170=init_room(0,{169,171,164,nil},{})
-	local room_171=init_room(0,{170,172,165,nil},{})
-	local room_172=init_room(0,{171,173,166,nil},{})
-	local room_173=init_room(0,{172,174,167,nil},{})
-	local room_174=init_room(0,{173,nil,168,nil},{})
+	local room_168=init_room(0,{167,nil,162,174},{
+		init_item(15,6,19),
+		init_item(15,7,19),
+		init_item(15,8,19),
+		init_item(15,9,19)
+	})
+	local room_169=init_room(9,{nil,170,163,nil},{})
+	local room_170=init_room(0,{169,171,164,nil},{
+		init_item(6,15,34),
+		init_item(7,15,34),
+		init_item(8,15,34),
+		init_item(9,15,34)
+	})
+	local room_171=init_room(0,{170,172,165,nil},{
+		init_item(6,15,34),
+		init_item(7,15,34),
+		init_item(8,15,34),
+		init_item(9,15,34)
+	})
+	local room_172=init_room(0,{171,173,166,nil},{
+		init_item(6,15,34),
+		init_item(7,15,34),
+		init_item(8,15,34),
+		init_item(9,15,34)
+	})
+	local room_173=init_room(0,{172,174,167,nil},{
+		init_item(6,15,34),
+		init_item(7,15,34),
+		init_item(8,15,34),
+		init_item(9,15,34)
+	})
+	local room_174=init_room(10,{173,nil,168,nil},{})
 
 	add(rooms,room_0)
 	add(rooms,room_1)
