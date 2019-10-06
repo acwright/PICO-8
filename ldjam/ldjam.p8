@@ -124,6 +124,7 @@ end
 --objects
 
 function init_player()
+	local timer=10
 	return {
 		x=63,
 		y=63,
@@ -136,7 +137,8 @@ function init_player()
 		flip_y=false,
 		o_sprite=24,
 		sprite=24,
-		frame=0,
+		sprite_frame=0,
+		sprite_timer=timer,
 		level=1,
 		health=4,
 		max_health=0,
@@ -212,10 +214,12 @@ function init_player()
 				self.flip_y=false
 			end
 
-			--frame
-			if (self.frame>3) self.frame=0
-			self.sprite=self.o_sprite+self.frame
-			self.frame+=1
+			-- sprite_timer
+			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
+			self.sprite_timer-=1
+			--sprite_frame
+			if (self.sprite_frame>3) self.sprite_frame=0
+			self.sprite=self.o_sprite+self.sprite_frame
 
 			--effects
 			--switch
@@ -243,7 +247,7 @@ function init_player()
 				end
 			end
 			if self.x>128 then
-				local next_dir=lroom.dirs[2]
+				local next_dir=room.dirs[2]
 				if next_dir then
 					room=rooms[next_dir+1]
 					self.x=-8
@@ -340,6 +344,7 @@ function init_item(x,y,sprite)
 end
 
 function init_enemy(x,y,sprite)
+	local timer=10
 	return {
 		x=x*8,
 		y=y*8,
@@ -348,11 +353,21 @@ function init_enemy(x,y,sprite)
 		vx=1,
 		vy=1,
 		sprite=sprite,
+		o_sprite=sprite,
+		sprite_frame=0,
+		sprite_timer=timer,
 		update=function(self)
 			self.x+=self.vx
 			self.y+=self.vy
-
 			if(mhit(self,1)) self.vx=-self.vx self.vy=-self.vy
+
+			-- sprite_timer
+			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
+			self.sprite_timer-=1
+			--sprite_frame
+			if (self.sprite_frame>3) self.sprite_frame=0
+			self.sprite=self.o_sprite+self.sprite_frame
+
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y)
@@ -361,9 +376,11 @@ function init_enemy(x,y,sprite)
 end
 
 function init_wave(x,y,v_x,v_y,life)
+	local timer=8
 	return {
 		sprite=13,
 		alt_sprite=false,
+		sprite_timer=timer,
 		x=x,
 		y=y,
 		v=3,
@@ -375,27 +392,34 @@ function init_wave(x,y,v_x,v_y,life)
 		update=function(self)
 			self.x+=(self.v*self.v_x)
 			self.y+=(self.v*self.v_y)
-		 self.life-=1
-			if self.alt_sprite then
-				self.sprite=13
-				self.alt_sprite=false
-			else
-				self.alt_sprite=true
-				if self.v_x == 1 then
-					self.sprite=15
-				elseif self.v_x == -1 then
-					self.sprite=15
-					self.flip_x=true
-				elseif self.v_y == 1 then
-					self.sprite=14
-					self.flip_y=true
+			--alternate sprite
+			if self.sprite_timer<=0 then
+				self.sprite_timer=timer
+				if self.alt_sprite then
+					self.sprite=13
+					self.alt_sprite=false
 				else
-					self.sprite=14
+					self.alt_sprite=true
+					if self.v_x == 1 then
+						self.sprite=15
+					elseif self.v_x == -1 then
+						self.sprite=15
+						self.flip_x=true
+					elseif self.v_y == 1 then
+						self.sprite=14
+						self.flip_y=true
+					else
+						self.sprite=14
+					end
 				end
 			end
-			if self.life==0 then
+			self.sprite_timer-=1
+
+			--life
+			if self.life<=0 then
 				del(waves,self)
 			end
+			self.life-=1
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
@@ -863,12 +887,12 @@ function init_rooms()
 end
 __gfx__
 0000000011111111111111111111111111111bb11bb1111100500500005005000111111003000300000660000000000000000000000000000000000000000000
-0000000011111111111111111111111111111bb11bb1111110510510015015011100001130333030000660000400004005005005000000000000000000000000
-00700700111111111111111111111111111112bbbb21111155555555555555551006600103000303006666000044440050050050000000000000000000000000
-0007700011111111111111111111111111111bb22bb11111005005000050050010600601300300300077a7000045540050050050000000000000000000000000
-0007700011112b1bb0220bb0b1b21111b0220bb00bb0220b105105100150150110600601303030300779a7700044440005555500000000000000000000000000
-00700700111120bbbb00bbbbbb021111bb00bbbbbbbb00bb555555555555555510066001303003030779a7700045540000444000000000000000000000000000
-00000000111112bb0bbbb00bbb2111110bbbb00bb00bbbb000500500005005001100001103033030077777700044440000444000000000000000000000000000
+0000000011111111111111111111111111111bb11bb1111110510510015015011100001130333030000660000400004005005005000000000000000000cc0000
+00700700111111111111111111111111111112bbbb21111155555555555555551006600103000303006666000044440050050050000cc000000cc000000cc000
+0007700011111111111111111111111111111bb22bb11111005005000050050010600601300300300077a700004554005005005000cccc0000cccc000000cc00
+0007700011112b1bb0220bb0b1b21111b0220bb00bb0220b105105100150150110600601303030300779a770004444000555550000cccc000cc00cc00000cc00
+00700700111120bbbb00bbbbbb021111bb00bbbbbbbb00bb555555555555555510066001303003030779a7700045540000444000000cc0000c0000c0000cc000
+00000000111112bb0bbbb00bbb2111110bbbb00bb00bbbb000500500005005001100001103033030077777700044440000444000000000000000000000cc0000
 000000001111bb0020bb022000bb111120bb02200220bb0210510510015015010111111000300300007777000400004000444000000000000000000000000000
 111111111111bb0222222212bb02111120bb02200220bb02015015101051050100aaa000000aaa0000aaa000000aaa0000099900009990000009990000999000
 1111111111110bb0222212220bb011110bbbb00bb00bbbb010510501015015100aacaa0000aacaa00aacaa0000aacaa000a999a00a999a0000a999a00a999a00
