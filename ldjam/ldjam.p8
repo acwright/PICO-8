@@ -146,6 +146,18 @@ function init_player()
 		rest_period=20,
 		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
+
+			--death
+			-- if self.health<=0 then
+			-- 	if self.o_sprite==44 then
+			-- 		self.frame+=1
+			-- 	else
+			-- 		self.o_sprite=44
+			-- 		self.frame=0
+			-- 	end
+			-- 	return
+			-- end
+
 			local lx=self.x
 			local ly=self.y
 
@@ -218,7 +230,9 @@ function init_player()
 			end
 			--heal
 			if (hit(self,6) and self.health<=4) self.health=4
-
+			--damage
+			if (hit(self,0)) self.health-=1
+			--rooms
 			if self.x<-8 then
 				local next_dir=level.room.dirs[1]
 				if next_dir then
