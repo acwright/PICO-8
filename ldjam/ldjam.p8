@@ -39,17 +39,17 @@ end
 --game
 
 function init_game()
-	init_level1()
-
+	init_levels()
+	
 	player=init_player()
 	waves={}
-	room=rooms[1]
+	level=levels[1]
 	game.update=update_game
 	game.draw=draw_game
 end
 
 function update_game()
-	room:update()
+	level:update()
 	player:update()
 	for wave in all(waves) do
 		wave:update()
@@ -57,7 +57,7 @@ function update_game()
 end
 
 function draw_game()
-	room:draw()
+	level:draw()
 	player:draw()
 	for wave in all(waves) do
 		wave:draw()
@@ -161,7 +161,7 @@ function init_player()
 
 			if(mhit(self,1)) self.x=lx self.y=ly
 
-			for item in all(room.items) do
+			for item in all(level.room.items) do
 					if hit(self,item) and fget(item.sprite,1) then
 					 self.x=lx self.y=ly
 					end
@@ -171,20 +171,40 @@ function init_player()
 			end
 
 			if self.x<-8 then
-				room=rooms[room.dirs[1]]
-				self.x=128
+				local next_dir=level.room.dirs[1]
+				if next_dir then
+					level.room=level.rooms[next_dir+1]
+					self.x=128
+				else
+					self.x=0
+				end
 			end
 			if self.x>128 then
-				room=rooms[room.dirs[2]]
-				self.x=-8
+				local next_dir=level.room.dirs[2]
+				if next_dir then
+					level.room=level.rooms[next_dir+1]
+					self.x=-8
+				else
+					self.x=120
+				end
 			end
 			if self.y<-8 then
-				room=rooms[room.dirs[3]]
-				self.y=128
+				local next_dir=level.room.dirs[3]
+				if next_dir then
+					level.room=level.rooms[next_dir+1]
+					self.y=120
+				else
+					self.y=0
+				end
 			end
 			if self.y>128 then
-				room=rooms[room.dirs[4]]
-				self.y=-8
+				local next_dir=level.room.dirs[4]
+				if next_dir then
+					level.room=level.rooms[next_dir+1]
+					self.y=-8
+				else
+					self.y=120
+				end
 			end
 			--actions
 			--secondary
@@ -211,33 +231,6 @@ function init_player()
 	}
 end
 
-function init_level1()
-	rooms={}
-
-	local room_0=init_room()
-	room_0.mapn=0
-	room_0.dirs={1,1,2,2}
-	room_0.items={
-		init_item(3,2,16),
-		init_item(7,15,6),
-		init_item(8,15,7),
-		init_item(10,11,38)
-	}
-
-	local room_1=init_room()
-	room_1.mapn=0
-	room_1.dirs={1,2,2,1}
-	room_1.items={
-		init_item(3,5,16),
-		init_item(4,11,32),
-		init_item(14,14,32),
-		init_enemy(10,11,96)
-	}
-
-	add(rooms,room_0)
-	add(rooms,room_1)
-end
-
 function init_room()
 	return {
 		mapn=0,
@@ -256,7 +249,11 @@ function init_room()
 			end
 		end,
 		draw=function(self)
-			map(self.mapn)
+			local my=flr(self.mapn/8)*16
+			local mx=(self.mapn-(flr(self.mapn/8)*8))*16
+			
+			map(mx,my)
+			
 			for item in all(self.items) do
 				item:draw()
 			end
@@ -338,6 +335,191 @@ function init_wave(sprite,x,y,flip_x,flip_y,life)
 	}
 end
 
+function init_up_elevator(level)
+	return {
+		x=48,
+		y=56,
+		w=8,
+		h=8,
+		level=level,
+		update=function(self)
+		
+		end,
+		draw=function(self)
+			spr(32,self.x,self.y)
+		end
+	}
+end
+
+function init_down_elevator(level)
+	return {
+		x=72,
+		y=56,
+		w=8,
+		h=8,
+		level=level,
+		update=function(self)
+		
+		end,
+		draw=function(self)
+			spr(32,self.x,self.y,1,1,false,true)
+		end
+	}
+end
+-->8
+--levels
+
+function init_levels()
+	levels={
+		init_level1()
+	}
+end
+
+function init_level1()
+	local level={
+		room=nil,
+		rooms={}
+	}
+
+	local room_0=init_room()
+	room_0.mapn=1
+	room_0.dirs={nil,nil,nil,2}
+	room_0.items={
+		init_up_elevator(2)
+	}
+
+	local room_1=init_room()
+	room_1.mapn=0
+	room_1.dirs={nil,nil,nil,3}
+	room_1.items={}
+
+	local room_2=init_room()
+	room_2.mapn=3
+	room_2.dirs={nil,nil,0,4}
+	room_2.items={}
+	
+	local room_3=init_room()
+	room_3.mapn=3
+	room_3.dirs={nil,nil,1,7}
+	room_3.items={}
+	
+	local room_4=init_room()
+	room_4.mapn=0
+	room_4.dirs={nil,5,2,nil}
+	room_4.items={}
+	
+	local room_5=init_room()
+	room_5.mapn=2
+	room_5.dirs={4,6,nil,nil}
+	room_5.items={}
+	
+	local room_6=init_room()
+	room_6.mapn=2
+	room_6.dirs={5,7,nil,nil}
+	room_6.items={}
+	
+	local room_7=init_room()
+	room_7.mapn=6
+	room_7.dirs={6,8,3,nil}
+	room_7.items={}
+	
+	local room_8=init_room()
+	room_8.mapn=12
+	room_8.dirs={7,nil,nil,9}
+	room_8.items={}
+	
+	local room_9=init_room()
+	room_9.mapn=7
+	room_9.dirs={nil,10,8,16}
+	room_9.items={}
+	
+	local room_10=init_room()
+	room_10.mapn=2
+	room_10.dirs={9,11,nil,nil}
+	room_10.items={}
+	
+	local room_11=init_room()
+	room_11.mapn=0
+	room_11.dirs={10,nil,nil,nil}
+	room_11.items={}
+	
+	local room_12=init_room()
+	room_12.mapn=11
+	room_12.dirs={nil,13,nil,17}
+	room_12.items={}
+	
+	local room_13=init_room()
+	room_13.mapn=4
+	room_13.dirs={12,14,nil,18}
+	room_13.items={}
+	
+	local room_14=init_room()
+	room_14.mapn=4
+	room_14.dirs={13,15,nil,19}
+	room_14.items={}
+	
+	local room_15=init_room()
+	room_15.mapn=4
+	room_15.dirs={14,16,nil,20}
+	room_15.items={}
+	
+	local room_16=init_room()
+	room_16.mapn=10
+	room_16.dirs={15,nil,9,nil}
+	room_16.items={}
+	
+	local room_17=init_room()
+	room_17.mapn=0
+	room_17.dirs={nil,nil,12,nil}
+	room_17.items={}
+	
+	local room_18=init_room()
+	room_18.mapn=0
+	room_18.dirs={nil,nil,13,nil}
+	room_18.items={}
+	
+	local room_19=init_room()
+	room_19.mapn=0
+	room_19.dirs={nil,nil,14,nil}
+	room_19.items={}
+	
+	local room_20=init_room()
+	room_20.mapn=0
+	room_20.dirs={nil,nil,15,nil}
+	room_20.items={}
+	
+	add(level.rooms,room_0)
+	add(level.rooms,room_1)
+	add(level.rooms,room_2)
+	add(level.rooms,room_3)
+	add(level.rooms,room_4)
+	add(level.rooms,room_5)
+	add(level.rooms,room_6)
+	add(level.rooms,room_7)
+	add(level.rooms,room_8)
+	add(level.rooms,room_9)
+	add(level.rooms,room_10)
+	add(level.rooms,room_11)
+	add(level.rooms,room_12)
+	add(level.rooms,room_13)
+	add(level.rooms,room_14)
+	add(level.rooms,room_15)
+	add(level.rooms,room_16)
+	add(level.rooms,room_17)
+	add(level.rooms,room_18)
+	add(level.rooms,room_19)
+	add(level.rooms,room_20)
+	
+	level.room=level.rooms[19]
+	level.update=function(self)
+		self.room:update()
+	end
+	level.draw=function(self)
+		self.room:draw()
+	end
+	
+	return level
+end
 __gfx__
 00000000666666666666666666666666666655777755666600000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000666666666666666666666666666655777755666600000000000000000000000000000000000000000000000000000000000000000000000000cc0000
@@ -402,7 +584,7 @@ __gfx__
 00455555555554000045555555555400004555555555540000455555555554000045555555555400004555555555540000455555555554000045555555555400
 00444444444444000044444444444400004444444444440000444444444444000044444444444400004444444444440000444444444444000044444444444400
 __gff__
-0002020202020a0a02020202020000000402000202020a0a0000000000000000000202020000040400000000000000000002000002020202000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0002020202020a0a02020202020000000402000202020a0a0000000000000000800202020000040400000000000000000002000002020202000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 0102020202020412120502020202020301020202020204121205020202020203010202020202020202020202020202030102020202031112121301020202020301020202020202020202020202020203010202020202041212130102020202030102020202020412120502020202020301020202020311121205020202020203
