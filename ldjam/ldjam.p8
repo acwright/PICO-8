@@ -130,81 +130,156 @@ function init_player()
 		v=1,
 		flip_x=false,
 		flip_y=false,
-		sprite=10,
-		sprite=64,
+		sprite=24,
+		level=4,
+		health=60,
+		energy=60,
+		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
 			local lx=self.x
 			local ly=self.y
 
 			if btn(0) then
-				self.sprite=65
-				self.flip_x=true
 				self.x-=self.v
+				self.holding.left+=1
+				-- self.sprite=11
+				-- self.flip_x=true
+				if (mhit(self,1)) self.x=lx
+				for item in all(room.items) do
+						if hit(self,item) and fget(item.sprite,1) then
+							self.x=lx
+						end
+						if hit(self,item) and fget(item.sprite,2) then
+							room:unlock()
+						end
+				end
+			else
+				--no longer holding
+				self.holding.left=0
 			end
 			if btn(1) then
-				self.sprite=65
-				self.flip_x=false
+				-- self.sprite=11
+				-- self.flip_x=false
+				self.holding.right+=1
 				self.x+=self.v
+				if (mhit(self,1)) self.x=lx
+				for item in all(room.items) do
+						if hit(self,item) and fget(item.sprite,1) then
+							self.x=lx
+						end
+						if hit(self,item) and fget(item.sprite,2) then
+							room:unlock()
+						end
+				end
+			else
+				--no longer holding
+				self.holding.right=0
 			end
 			if btn(2) then
-				self.sprite=64
-				self.flip_y=false
+				-- self.sprite=10
+				-- self.flip_y=false
+				self.holding.up+=1
 				self.y-=self.v
+				if (mhit(self,1)) self.y=ly
+				for item in all(room.items) do
+						if hit(self,item) and fget(item.sprite,1) then
+							self.y=ly
+						end
+						if hit(self,item) and fget(item.sprite,2) then
+							room:unlock()
+						end
+				end
+			else
+					--no longer holding
+					self.holding.up=0
 			end
 			if btn(3) then
-				self.sprite=64
-				self.flip_y=true
+				-- self.sprite=10
+				-- self.flip_y=true
+				self.holding.down+=1
 				self.y+=self.v
+				if (mhit(self,1)) self.y=ly
+				for item in all(room.items) do
+						if hit(self,item) and fget(item.sprite,1) then
+							self.y=ly
+						end
+						if hit(self,item) and fget(item.sprite,2) then
+							room:unlock()
+						end
+				end
+			else
+				--no longer holding
+				self.holding.down=0
 			end
 
-			if(mhit(self,1)) self.x=lx self.y=ly
-
-			for item in all(room.items) do
-					if hit(self,item) and fget(item.sprite,1) then
-					 self.x=lx self.y=ly
-					end
-					if hit(self,item) and fget(item.sprite,2) then
-					 room:unlock()
-					end
+			if (self.holding.left>self.holding.right) and (self.holding.left>self.holding.up) and (self.holding.left>self.holding.down) then
+				self.sprite=28
+				self.flip_x=true
+			elseif (self.holding.right>self.holding.up) and (self.holding.right>self.holding.down) then
+				self.sprite=28
+				self.flip_x=false
+			elseif (self.holding.up>self.holding.down) then
+				self.sprite=24
+				self.flip_y=false
+			elseif (self.holding.down>0) then
+				self.sprite=24
+				self.flip_y=true
 			end
 
-			if self.x<-8 then
+			if self.x<-4 then
 				room=rooms[room.dirs[1]]
-				self.x=128
+				self.x=124
 			end
-			if self.x>128 then
+			if self.x>124 then
 				room=rooms[room.dirs[2]]
-				self.x=-8
+				self.x=-4
 			end
-			if self.y<-8 then
+			if self.y<-4 then
 				room=rooms[room.dirs[3]]
-				self.y=128
+				self.y=124
 			end
-			if self.y>128 then
+			if self.y>124 then
 				room=rooms[room.dirs[4]]
-				self.y=-8
+				self.y=-4
 			end
 			--actions
 			--secondary
 			if btnp(4) then
+				if self.level>2 and self.energy>=60 then
+					add(waves,init_wave(14,self.x,self.y,false,false,self.level*2))
+					add(waves,init_wave(14,self.x,self.y,false,true,self.level*2))
+					add(waves,init_wave(15,self.x,self.y,true,false,self.level*2))
+					add(waves,init_wave(15,self.x,self.y,false,false,self.level*2))
+					self.energy-=60
+				end
 			end
 			--primary
 			if btnp(5) then
-				if self.level<4 then
-					local sprite=64
-					if self.sprite==64 then sprite=65 end
-					local wave=init_wave(sprite,self.x,self.y,self.flip_x,self.flip_y,self.level*4)
-					add(waves,wave)
-				else
-					add(waves,init_wave(80,self.x,self.y,false,false,self.level*2))
-					add(waves,init_wave(80,self.x,self.y,false,true,self.level*2))
-					add(waves,init_wave(81,self.x,self.y,true,false,self.level*2))
-					add(waves,init_wave(81,self.x,self.y,false,false,self.level*2))
-				end
+				if (self.energy<20) return
+				local sprite=14
+				if self.sprite==28 then sprite=15 end
+				local wave=init_wave(sprite,self.x,self.y,self.flip_x,self.flip_y,self.level*4)
+				add(waves,wave)
+				self.energy-=20
+			end
+			--energy
+			if self.energy<60 then
+				self.energy+=1
 			end
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
+			local health=''
+			for i=20,self.health+1,20 do
+				health=health..'♥'
+			end
+			print(health,1,1,8)
+			local energy=''
+			for i=20,self.energy+1,20 do
+				energy=energy..'◆'
+			end
+			print(energy,1,8,12)
+			--print('     energy',8,8,8)
 		end
 	}
 end
@@ -308,7 +383,7 @@ function init_wave(sprite,x,y,flip_x,flip_y,life)
 		flip_y=flip_y,
 		life=life,
 		update=function(self)
-			if self.sprite==12 then
+			if self.sprite==14 then
 		 	if self.flip_y then
 		 		--up
 		 		self.y+=4
