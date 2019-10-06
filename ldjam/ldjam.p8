@@ -62,7 +62,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[50]
+	room=rooms[1]
 
 	player=init_player()
 	waves={}
@@ -160,8 +160,8 @@ end
 function init_player()
 	local timer=10
 	return {
-		x=63,
-		y=74,
+		x=60,
+		y=73,
 		w=8,
 		h=8,
 		v=1,
@@ -180,6 +180,7 @@ function init_player()
 		max_energy=0,
 		rest=0,
 		rest_period=20,
+		locked=false,
 		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
 
@@ -251,7 +252,13 @@ function init_player()
 				self.o_sprite=24
 				self.flip_y=false
 			end
-
+			--lock movement after elevator
+			if self.locked then
+				self.x=lx
+				self.y=ly
+				self.o_sprite=24
+				if (self.holding.left==0 and self.holding.right==0 and self.holding.up==0 and self.holding.down==0) self.locked=false
+			end
 			-- sprite_timer
 			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
 			self.sprite_timer-=1
@@ -274,6 +281,19 @@ function init_player()
 			if (hit(self,6) and self.health<=4) self.health=4
 			--damage
 			if (hit(self,0)) self.health-=1
+			--elevator
+			local el=hit(self,7)
+			if el then
+				room=rooms[el.room+1]
+				self.locked=true
+				if el.v>0 then
+					self.x+=24
+				else
+					self.x-=24
+				end
+				self.y+=2
+			end
+
 			--rooms
 			if self.x<-8 then
 				local next_dir=room.dirs[1]
@@ -351,7 +371,6 @@ function init_player()
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
 			local health=''
-			mhit(room.mapn,self,1)
 			for i=1,self.health do
 				health=health..'♥'
 			end
@@ -468,32 +487,36 @@ end
 
 function init_up_elevator(room)
 	return {
+		sprite=32,
 		x=48,
 		y=56,
 		w=8,
 		h=8,
+		v=1,
 		room=room,
 		update=function(self)
 
 		end,
 		draw=function(self)
-			spr(32,self.x,self.y)
+			spr(self.sprite,self.x,self.y)
 		end
 	}
 end
 
 function init_down_elevator(room)
 	return {
+		sprite=32,
 		x=72,
 		y=56,
 		w=8,
 		h=8,
+		v=-1,
 		room=room,
 		update=function(self)
 
 		end,
 		draw=function(self)
-			spr(32,self.x,self.y,1,1,false,true)
+			spr(self.sprite,self.x,self.y,1,1,false,true)
 		end
 	}
 end
