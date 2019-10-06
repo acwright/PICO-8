@@ -104,20 +104,22 @@ function mhit(obj,flag)
  return hit
 end
 
-function hit(obj1,obj2)
-	local hit=false
+function hit(obj,flag)
+	for item in all(level.room.items) do
+		if fget(item.sprite,flag) then
+			local xd=abs((obj.x+(obj.w/2))-(item.x+(item.w/2)))
+			local xs=obj.w*0.5+item.w*0.5
+			local yd=abs((obj.y+(obj.h/2))-(item.y+(item.h/2)))
+			local ys=obj.h/2+item.h/2
 
- local xd=abs((obj1.x+(obj1.w/2))-(obj2.x+(obj2.w/2)))
- local xs=obj1.w*0.5+obj2.w*0.5
- local yd=abs((obj1.y+(obj1.h/2))-(obj2.y+(obj2.h/2)))
- local ys=obj1.h/2+obj2.h/2
-
- if xd<xs and yd<ys then
-  hit=true
- end
-
- return hit
+			if xd<xs and yd<ys then
+				return item
+			end
+		end
+	end
+	return nil
 end
+
 -->8
 --objects
 
@@ -135,85 +137,58 @@ function init_player()
 		o_sprite=24,
 		sprite=24,
 		frame=0,
-		level=4,
-		health=3,
+		level=1,
+		health=4,
 		max_health=0,
 		energy=0,
-		max_energy=3,
+		max_energy=0,
 		rest=0,
 		rest_period=20,
 		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
+
+			--death
+			-- if self.health<=0 then
+			-- 	if self.o_sprite==44 then
+			-- 		self.frame+=1
+			-- 	else
+			-- 		self.o_sprite=44
+			-- 		self.frame=0
+			-- 	end
+			-- 	return
+			-- end
+
 			local lx=self.x
 			local ly=self.y
 
 			if btn(0) then
 				self.x-=self.v
-				-- self.v_x=-1
 				self.holding.left+=1
-				if (mhit(self,1)) self.x=lx
-				for item in all(level.room.items) do
-						if hit(self,item) and fget(item.sprite,1) then
-							self.x=lx
-						end
-						if hit(self,item) and fget(item.sprite,2) then
-							level.room:unlock()
-						end
-				end
+				if (mhit(self,1) or hit(self,1)) self.x=lx
 			else
 				--no longer holding
 				self.holding.left=0
 			end
 			if btn(1) then
 				self.x+=self.v
-				-- self.v_x=1
 				self.holding.right+=1
-				if (mhit(self,1)) self.x=lx
-				for item in all(level.room.items) do
-						if hit(self,item) and fget(item.sprite,1) then
-							self.x=lx
-						end
-						if hit(self,item) and fget(item.sprite,2) then
-							level.room:unlock()
-						end
-						if hit(self,item) and fget(item.sprite,3) then
-							player:level_up()
-						end
-				end
+				if (mhit(self,1) or hit(self,1)) self.x=lx
 			else
 				--no longer holding
 				self.holding.right=0
 			end
 			if btn(2) then
 				self.y-=self.v
-				-- self.v_y=-1
 				self.holding.up+=1
-				if (mhit(self,1)) self.y=ly
-				for item in all(level.room.items) do
-						if hit(self,item) and fget(item.sprite,1) then
-							self.y=ly
-						end
-						if hit(self,item) and fget(item.sprite,2) then
-							level.room:unlock()
-						end
-				end
+				if (mhit(self,1) or hit(self,1)) self.y=ly
 			else
 					--no longer holding
 					self.holding.up=0
 			end
 			if btn(3) then
 				self.y+=self.v
-				-- self.v_y=1
 				self.holding.down+=1
-				if (mhit(self,1)) self.y=ly
-				for item in all(level.room.items) do
-						if hit(self,item) and fget(item.sprite,1) then
-							self.y=ly
-						end
-						if hit(self,item) and fget(item.sprite,2) then
-							level.room:unlock()
-						end
-				end
+				if (mhit(self,1) or hit(self,1)) self.y=ly
 			else
 				--no longer holding
 				self.holding.down=0
@@ -242,15 +217,22 @@ function init_player()
 			self.sprite=self.o_sprite+self.frame
 			self.frame+=1
 
-			for item in all(level.room.items) do
-					if hit(self,item) and fget(item.sprite,1) then
-					 self.x=lx self.y=ly
-					end
-					if hit(self,item) and fget(item.sprite,2) then
-					 level.room:unlock()
-					end
+			--effects
+			--switch
+			if (hit(self,2)) level.room:unlock()
+			--level_up
+			local level_up=hit(self,4)
+			if level_up then
+				self.level+=1
+				self.energy+=1
+				self.max_energy+=1
+				del(level.room.items,level_up)
 			end
-
+			--heal
+			if (hit(self,6) and self.health<=4) self.health=4
+			--damage
+			if (hit(self,0)) self.health-=1
+			--rooms
 			if self.x<-8 then
 				local next_dir=level.room.dirs[1]
 				if next_dir then
@@ -291,10 +273,10 @@ function init_player()
 			--secondary
 			if btnp(4) then
 				if self.level>2 and self.energy>=3 then
-					add(waves,init_wave(self.x,self.y,1,0,self.level*4))
-					add(waves,init_wave(self.x,self.y,-1,0,self.level*4))
-					add(waves,init_wave(self.x,self.y,0,1,self.level*4))
-					add(waves,init_wave(self.x,self.y,0,-1,self.level*4))
+					add(waves,init_wave(self.x,self.y,1,0,self.level*5))
+					add(waves,init_wave(self.x,self.y,-1,0,self.level*5))
+					add(waves,init_wave(self.x,self.y,0,1,self.level*5))
+					add(waves,init_wave(self.x,self.y,0,-1,self.level*5))
 					self.energy-=3
 				end
 			end
@@ -313,7 +295,7 @@ function init_player()
 					v_x=1
 				end
 
-				local wave=init_wave(self.x,self.y,v_x,v_y,self.level*4)
+				local wave=init_wave(self.x,self.y,v_x,v_y,self.level*5)
 				add(waves,wave)
 				self.energy-=1
 			end
@@ -444,7 +426,7 @@ function init_wave(x,y,v_x,v_y,life)
 		alt_sprite=false,
 		x=x,
 		y=y,
-		v=2,
+		v=3,
 		v_x=v_x,
 		v_y=v_y,
 		flip_x=false,
@@ -627,10 +609,12 @@ function init_level1()
 		init_item(7,15,6),
 		init_item(8,15,7),
 		init_item(12,10,38),
-		init_item(13,12,48),
+		init_item(7,5,48),
 		init_item(4,3,49),
 		init_item(6,2,50),
-		init_item(8,1,51)
+		init_item(8,1,51),
+		init_item(3,12,39),
+		init_item(12,3,56)
 	}
 
 	local room_19=init_room()
@@ -725,7 +709,7 @@ ecaaaaceecaaaaceecaaaaceecaaaace900aacee000aacee000aacee090aacee0000000dd0000000
 00000666000006660000066600000666000666000006660000066600000666000000555555550000000055555555000000005555555500000000555555550000
 00000666000006660000066600000666000666000006660000066600000666000000005555000000000000555500000000000055550000000000005555000000
 __gff__
-0002020202020a0a02020202020000000202000202020a0a0000000000000000800202020000040400000000000000000404040402020202000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0002020202020a0a02020202020000000202000202020a0a0000000000000000800202020000044000000000000000001010101002020202010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 0102020202020412120502020202020301020202020204121205020202020203010202020202020202020202020202030102020202031112121301020202020301020202020202020202020202020203010202020202041212130102020202030102020202020412120502020202020301020202020311121205020202020203
