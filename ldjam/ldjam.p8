@@ -344,6 +344,7 @@ function init_item(x,y,sprite)
 end
 
 function init_enemy(x,y,sprite)
+	local timer=10
 	return {
 		x=x*8,
 		y=y*8,
@@ -352,11 +353,21 @@ function init_enemy(x,y,sprite)
 		vx=1,
 		vy=1,
 		sprite=sprite,
+		o_sprite=sprite,
+		sprite_frame=0,
+		sprite_timer=timer,
 		update=function(self)
 			self.x+=self.vx
 			self.y+=self.vy
-
 			if(mhit(self,1)) self.vx=-self.vx self.vy=-self.vy
+
+			-- sprite_timer
+			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
+			self.sprite_timer-=1
+			--sprite_frame
+			if (self.sprite_frame>3) self.sprite_frame=0
+			self.sprite=self.o_sprite+self.sprite_frame
+
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y)
@@ -586,7 +597,7 @@ function init_rooms()
 		init_item(6,2,50),
 		init_item(8,1,51),
 		init_item(3,12,39),
-		init_item(12,3,56)
+		init_enemy(12,3,56)
 	}
 
 	local room_19=init_room()
