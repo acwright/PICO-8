@@ -128,12 +128,20 @@ function init_player()
 		w=8,
 		h=8,
 		v=1,
+		-- v_x=0,
+		-- v_y=0,
 		flip_x=false,
 		flip_y=false,
+		o_sprite=24,
 		sprite=24,
+		frame=0,
 		level=4,
-		health=60,
-		energy=60,
+		health=3,
+		max_health=0,
+		energy=0,
+		max_energy=3,
+		rest=0,
+		rest_period=20,
 		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
 			local lx=self.x
@@ -141,9 +149,8 @@ function init_player()
 
 			if btn(0) then
 				self.x-=self.v
+				-- self.v_x=-1
 				self.holding.left+=1
-				-- self.sprite=11
-				-- self.flip_x=true
 				if (mhit(self,1)) self.x=lx
 				for item in all(room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
@@ -158,10 +165,9 @@ function init_player()
 				self.holding.left=0
 			end
 			if btn(1) then
-				-- self.sprite=11
-				-- self.flip_x=false
-				self.holding.right+=1
 				self.x+=self.v
+				-- self.v_x=1
+				self.holding.right+=1
 				if (mhit(self,1)) self.x=lx
 				for item in all(room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
@@ -170,16 +176,18 @@ function init_player()
 						if hit(self,item) and fget(item.sprite,2) then
 							room:unlock()
 						end
+						if hit(self,item) and fget(item.sprite,3) then
+							player:level_up()
+						end
 				end
 			else
 				--no longer holding
 				self.holding.right=0
 			end
 			if btn(2) then
-				-- self.sprite=10
-				-- self.flip_y=false
-				self.holding.up+=1
 				self.y-=self.v
+				-- self.v_y=-1
+				self.holding.up+=1
 				if (mhit(self,1)) self.y=ly
 				for item in all(room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
@@ -194,10 +202,9 @@ function init_player()
 					self.holding.up=0
 			end
 			if btn(3) then
-				-- self.sprite=10
-				-- self.flip_y=true
-				self.holding.down+=1
 				self.y+=self.v
+				-- self.v_y=1
+				self.holding.down+=1
 				if (mhit(self,1)) self.y=ly
 				for item in all(room.items) do
 						if hit(self,item) and fget(item.sprite,1) then
@@ -211,20 +218,30 @@ function init_player()
 				--no longer holding
 				self.holding.down=0
 			end
-
+			--longest held direction
 			if (self.holding.left>self.holding.right) and (self.holding.left>self.holding.up) and (self.holding.left>self.holding.down) then
-				self.sprite=28
-				self.flip_x=true
-			elseif (self.holding.right>self.holding.up) and (self.holding.right>self.holding.down) then
-				self.sprite=28
+				--left
+				self.o_sprite=40
 				self.flip_x=false
+			elseif (self.holding.right>self.holding.up) and (self.holding.right>self.holding.down) then
+				--right
+				self.o_sprite=40
+				self.flip_x=true
 			elseif (self.holding.up>self.holding.down) then
-				self.sprite=24
+				--up
+				self.o_sprite=28
 				self.flip_y=false
 			elseif (self.holding.down>0) then
-				self.sprite=24
-				self.flip_y=true
+				--updown
+				self.o_sprite=24
+				self.flip_y=false
 			end
+
+			--frame
+			if (self.frame>3) self.frame=0
+			self.sprite=self.o_sprite+self.frame
+			self.frame+=1
+
 
 			if self.x<-4 then
 				room=rooms[room.dirs[1]]
@@ -245,37 +262,48 @@ function init_player()
 			--actions
 			--secondary
 			if btnp(4) then
-				if self.level>2 and self.energy>=60 then
-					add(waves,init_wave(14,self.x,self.y,false,false,self.level*2))
-					add(waves,init_wave(14,self.x,self.y,false,true,self.level*2))
-					add(waves,init_wave(15,self.x,self.y,true,false,self.level*2))
-					add(waves,init_wave(15,self.x,self.y,false,false,self.level*2))
-					self.energy-=60
+				if self.level>2 and self.energy>=3 then
+					add(waves,init_wave(self.x,self.y,1,0,self.level*4))
+					add(waves,init_wave(self.x,self.y,-1,0,self.level*4))
+					add(waves,init_wave(self.x,self.y,0,1,self.level*4))
+					add(waves,init_wave(self.x,self.y,0,-1,self.level*4))
+					self.energy-=3
 				end
 			end
 			--primary
 			if btnp(5) then
-				if (self.energy<20) return
-				local sprite=14
-				if self.sprite==28 then sprite=15 end
-				local wave=init_wave(sprite,self.x,self.y,self.flip_x,self.flip_y,self.level*4)
+				if (self.energy<1) return
+				local v_x=0
+				local v_y=0
+				if self.o_sprite==24 then
+					v_y=1
+				elseif self.o_sprite==28 then
+					v_y=-1
+				elseif(self.o_sprite==40 and self.flip_x == false) then
+					v_x=-1
+				else
+					v_x=1
+				end
+
+				local wave=init_wave(self.x,self.y,v_x,v_y,self.level*4)
 				add(waves,wave)
-				self.energy-=20
+				self.energy-=1
 			end
 			--energy
-			if self.energy<60 then
-				self.energy+=1
+			if self.energy<self.max_energy then
+				self.rest+=1
+				if (self.rest==self.rest_period) self.energy+=1 self.rest=0
 			end
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
 			local health=''
-			for i=20,self.health+1,20 do
+			for i=1,self.health do
 				health=health..'♥'
 			end
 			print(health,1,1,8)
 			local energy=''
-			for i=20,self.energy+1,20 do
+			for i=1,self.energy do
 				energy=energy..'◆'
 			end
 			print(energy,1,8,12)
@@ -374,33 +402,39 @@ function init_enemy(x,y,sprite)
 	}
 end
 
-function init_wave(sprite,x,y,flip_x,flip_y,life)
+function init_wave(x,y,v_x,v_y,life)
 	return {
-		sprite=sprite,
+		sprite=13,
+		alt_sprite=false,
 		x=x,
 		y=y,
-		flip_x=flip_x,
-		flip_y=flip_y,
+		v=2,
+		v_x=v_x,
+		v_y=v_y,
+		flip_x=false,
+		flip_y=false,
 		life=life,
 		update=function(self)
-			if self.sprite==14 then
-		 	if self.flip_y then
-		 		--up
-		 		self.y+=4
-		 	else
-		 		--down
-		  	self.y-=4
-		 	end
-		 else
-		 	if self.flip_x then
-		 		--left
-		 		self.x-=4
-		 	else
-		 		--right
-		 		self.x+=4
-		 	end
-		 end
+			self.x+=(self.v*self.v_x)
+			self.y+=(self.v*self.v_y)
 		 self.life-=1
+			if self.alt_sprite then
+				self.sprite=13
+				self.alt_sprite=false
+			else
+				self.alt_sprite=true
+				if self.v_x == 1 then
+					self.sprite=15
+				elseif self.v_x == -1 then
+					self.sprite=15
+					self.flip_x=true
+				elseif self.v_y == 1 then
+					self.sprite=14
+					self.flip_y=true
+				else
+					self.sprite=14
+				end
+			end
 			if self.life==0 then
 				del(waves,self)
 			end
@@ -421,20 +455,20 @@ __gfx__
 00000000666655777777777777556666777777777777777700000000000000000000000000000000000000000000000000000000000000000000000000cc0000
 00000000666655777777777777556666777777777777777700000000000000000000000000000000000000000000000000000000000000000000000000000000
 66666666666655777777777777556666777777777777777700066600000656000000000000000000000000000000000000000000000000000000000000000000
-6666666666665577775757577755666677777777777777770006560000065600000330000003300000033000000330000bb000000bb000000bb000000bb00000
-6666666666665577757675777755666655555577775555550006560000065600000aa000000aa000000aa000000aa00000bbb00000bbb00000bbb00000bbb000
-666666666666557777676757775566665555557777555555000656000006560000b33b0000b33b0000b33b0000b33b0000033a3000033a3000033a3000033a30
-666666666666557775767677775566666666557777556666000656000006560000b33b0000b33b0000b33b0000b33b0000033a3000033a3000033a3000033a30
-66666666666655777757675777556666666655777755666600065600000656000bb00bb00bb00bb00bb00bb00bb00bb000bbb00000bbb00000bbb00000bbb000
-66666666666655777575757777556666666655777755666600065600000656000b0000b00b0000b00b0000b00b0000b00bb000000bb000000bb000000bb00000
+66666666666655777777777777556666777777777777777700065600000656000b0000b00b0000b00b0000b00b0000b000033000000330000003300000033000
+66666666666655777767777777556666555555777755555500065600000656000bb00bb00bb00bb00bb00bb00bb00bb0000aa000000aa0000008800000088000
+666666666666557777777767775566665555557777555555000656000006560000b33b0000b33b0000b33b0000b33b0000b33b0000b33b0000b33b0000b33b00
+666666666666557777777777775566666666557777556666000656000006560000b33b0000b33b0000b33b0000b33b0000b33b0000b33b0000b33b0000b33b00
+6666666666665577776777777755666666665577775566660006560000065600000aa000000aa00000088000000880000bb00bb00bb00bb00bb00bb00bb00bb0
+6666666666665577777777777755666666665577775566660006560000065600000330000003300000033000000330000b0000b00b0000b00b0000b00b0000b0
 66666666666655777777777777556666666655777755666600065600000666000000000000000000000000000000000000000000000000000000000000000000
 00044000666655777777777777556666777777777777777777777777999999990000000000000000000000000000000000000000000000000000000000000000
-00444400666655777777777777556666775757777757575778888887999999990b0000b00b0000b00b0000b00b0000b005000050050000500500005005000050
-04444440666655555555555555556666757675777577757778f77f8799c99c990bb00bb00bb00bb00bb00bb00bb00bb005500550055005500550055005500550
-040440406666555555555555555566667767775777777757787f77879999c99900b33b0000b33b0000b33b0000b33b0000566500005665000056650000566500
-0004400066666666666666666666666675777677757777777877f787999c999900b33b0000b33b0000b33b0000b33b0000566500005665000056650000566500
-00044000666666666666666666666666775767577757775778f77f8799c99c99000aa000000aa000000aa000000aa00000099000000bb00000099000000bb000
-00044000666666666666666666666666777575777575757778888887999999990003300000033000000330000003300000066000000660000006600000066000
+004444006666557777777777775566667757577777575757788888879999999900000bb000000bb000000bb000000bb005000050050000500500005005000050
+04444440666655555555555555556666757675777577757778f77f8799c99c99000bbb00000bbb00000bbb00000bbb0005500550055005500550055005500550
+040440406666555555555555555566667767775777777757787f77879999c99903a3300003a33000038330000383300000566500005665000056650000566500
+0004400066666666666666666666666675777677757777777877f787999c999903a3300003a33000038330000383300000566500005665000056650000566500
+00044000666666666666666666666666775767577757775778f77f8799c99c99000bbb00000bbb00000bbb00000bbb0000099000000bb00000099000000bb000
+000440006666666666666666666666667775757775757577788888879999999900000bb000000bb000000bb000000bb000066000000660000006600000066000
 00000000666666666666666666666666777777777777777777777777999999990000000000000000000000000000000000000000000000000000000000000000
 000000000000000000000000000000000000000000000000000000000000000000cccc0000cccc0000cccc0000cccc0000cccc0000cccc0000cccc0000cccc00
 000000000000000000000000000000000000000000000000000000000000000000c99c0000c99c0000c99c0000c99c0000c99c0000c99c0000c99c0000c99c00
