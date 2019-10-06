@@ -103,14 +103,7 @@ function mhit(obj,flag)
 
  return hit
 end
--- for item in all(level.room.items) do
--- 		if hit(self,item) and fget(item.sprite,1) then
--- 			self.y=ly
--- 		end
--- 		if hit(self,item) and fget(item.sprite,2) then
--- 			level.room:unlock()
--- 		end
--- end
+
 function hit(obj,flag)
 	for item in all(level.room.items) do
 		if fget(item.sprite,flag) then
@@ -126,20 +119,7 @@ function hit(obj,flag)
 	end
 	return nil
 end
--- function hit(obj1,obj2)
--- 	local hit=false
---
---  local xd=abs((obj1.x+(obj1.w/2))-(obj2.x+(obj2.w/2)))
---  local xs=obj1.w*0.5+obj2.w*0.5
---  local yd=abs((obj1.y+(obj1.h/2))-(obj2.y+(obj2.h/2)))
---  local ys=obj1.h/2+obj2.h/2
---
---  if xd<xs and yd<ys then
---   hit=true
---  end
---
---  return hit
--- end
+
 -->8
 --objects
 
@@ -171,40 +151,32 @@ function init_player()
 
 			if btn(0) then
 				self.x-=self.v
-				-- self.v_x=-1
 				self.holding.left+=1
-				if (mhit(self,1)) self.x=lx
-				if (hit(self,1)) self.x=lx
+				if (mhit(self,1) or hit(self,1)) self.x=lx
 			else
 				--no longer holding
 				self.holding.left=0
 			end
 			if btn(1) then
 				self.x+=self.v
-				-- self.v_x=1
 				self.holding.right+=1
-				if (mhit(self,1)) self.x=lx
-				if (hit(self,1)) self.x=lx
+				if (mhit(self,1) or hit(self,1)) self.x=lx
 			else
 				--no longer holding
 				self.holding.right=0
 			end
 			if btn(2) then
 				self.y-=self.v
-				-- self.v_y=-1
 				self.holding.up+=1
-				if (mhit(self,1)) self.y=ly
-				if (hit(self,1)) self.y=ly
+				if (mhit(self,1) or hit(self,1)) self.y=ly
 			else
 					--no longer holding
 					self.holding.up=0
 			end
 			if btn(3) then
 				self.y+=self.v
-				-- self.v_y=1
 				self.holding.down+=1
-				if (mhit(self,1)) self.y=ly
-				if (hit(self,1)) self.y=lx
+				if (mhit(self,1) or hit(self,1)) self.y=ly
 			else
 				--no longer holding
 				self.holding.down=0
@@ -627,7 +599,8 @@ function init_level1()
 		init_item(4,3,49),
 		init_item(6,2,50),
 		init_item(8,1,51),
-		init_item(3,12,39)
+		init_item(3,12,39),
+		init_item(12,3,56)
 	}
 
 	local room_19=init_room()
@@ -736,7 +709,7 @@ __gfx__
 00455555555554000045555555555400004555555555540000455555555554000045555555555400004555555555540000455555555554000045555555555400
 00444444444444000044444444444400004444444444440000444444444444000044444444444400004444444444440000444444444444000044444444444400
 __gff__
-0002020202020a0a02020202020000000202000202020a0a0000000000000000800202020000044000000000000000001010101002020202000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0002020202020a0a02020202020000000202000202020a0a0000000000000000800202020000044000000000000000001010101002020202010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 0102020202020412120502020202020301020202020204121205020202020203010202020202020202020202020202030102020202031112121301020202020301020202020202020202020202020203010202020202041212130102020202030102020202020412120502020202020301020202020311121205020202020203
