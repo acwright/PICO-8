@@ -196,21 +196,21 @@ function init_player()
 				end
 			end
 
-			if self.x<-8 then
+			if self.x<-4 then
 				room=rooms[room.dirs[1]]
-				self.x=128
+				self.x=124
 			end
-			if self.x>128 then
+			if self.x>124 then
 				room=rooms[room.dirs[2]]
-				self.x=-8
+				self.x=-4
 			end
-			if self.y<-8 then
+			if self.y<-4 then
 				room=rooms[room.dirs[3]]
-				self.y=128
+				self.y=124
 			end
-			if self.y>128 then
+			if self.y>124 then
 				room=rooms[room.dirs[4]]
-				self.y=-8
+				self.y=-4
 			end
 			--actions
 			--secondary
@@ -259,7 +259,7 @@ function init_level1()
 
 	local room_0=init_room()
 	room_0.mapn=0
-	room_0.dirs={1,1,2,2}
+	room_0.dirs={1,2,2,2}
 	room_0.items={
 		init_item(3,2,37),
 		init_item(7,15,49),
