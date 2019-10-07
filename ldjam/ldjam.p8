@@ -236,7 +236,7 @@ function init_player()
 		max_health=4,
 		health_lock=0,
 		energy=0,
-		max_energy=4,
+		max_energy=0,
 		rest=0,
 		rest_period=20,
 		locked=false,
