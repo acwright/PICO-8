@@ -6,8 +6,7 @@ __lua__
 
 function _init()
 	game={}
-	--init_menu()
-	init_game()
+	init_credits()
 end
 
 function _update60()
@@ -105,6 +104,64 @@ end
 function draw_gameover()
 	print("press ❎ to restart",30,63,7)
 	print("press 🅾️ to go to menu",23,70,7)
+end
+-->8
+--credits
+
+function init_credits()
+	credits={
+		t=30,
+		c=6,
+		l=1,
+		lt=120,
+		lines={
+			{"created by","infinite token"},
+			{"sprites","chris thompson"},
+			{"sounds","chris thompson"},
+			{"levels","daniel heupel"},
+			{"programming","jay deaton"},
+			{"programming","aaron wright"},
+			{"assistant","river"}
+		},
+		update=function(self)
+			self.t-=1
+			self.lt-=1
+			if self.t==0 then
+				if self.c==6 then
+					self.c=7
+				else
+					self.c=6
+				end
+				self.t=30
+			end
+			if self.lt==0 then
+				self.l+=1
+				if self.l==8 then
+					self.l=1
+				end
+				self.lt=120
+			end
+		end,
+		draw=function(self)
+			map(112,16)
+			print(self.lines[self.l][1],47,40,6)
+			print(self.lines[self.l][2],38,50,6)
+			print("press ❎",49,97,self.c)
+		end
+	}
+	game.update=update_credits
+	game.draw=draw_credits
+end
+
+function update_credits()
+	credits:update()
+	if btnp(❎) then
+		init_menu()
+	end
+end
+
+function draw_credits()
+	credits:draw()
 end
 -->8
 --helpers
@@ -624,6 +681,7 @@ function init_rooms()
 	local rooms={}
 
 	--level 1
+
 	local room_0=init_room(1,{nil,nil,nil,2},{
 		init_item(6,0,2),
 		init_item(7,0,2),
