@@ -241,7 +241,7 @@ function init_player()
 		rest=0,
 		rest_period=20,
 		locked=false,
-		collectables=4,
+		collectables=0,
 		winning=false,
 		winning_timer=60,
 		death_timer=60,
