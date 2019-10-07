@@ -62,7 +62,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[19]
+	room=rooms[5]
 
 	player=init_player()
 	game.update=update_game
@@ -235,10 +235,15 @@ function init_player()
 		rest_period=20,
 		locked=false,
 		collectables=0,
+		winning=false,
+		winning_timer=60,
 		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
-			--death
+			local lx=self.x
+			local ly=self.y
+
 			if self.health<=0 then
+				-- dying
 				if self.o_sprite==44 then
 					if self.sprite<47 then
 						if self.timer<=0 then
@@ -255,11 +260,17 @@ function init_player()
 					self.frame=0
 					self.timer=timer
 				end
+			elseif self.winning then
+				-- winning
+				-- self.o_sprite=24
+				if self.x < 60 then self.x+=self.v elseif self.x>60 then self.x-=self.v end
+				if self.y < 62 then self.y+=self.v elseif self.y>62 then self.y-=self.v end
+				if (self.x==60 and self.y==62) then
+					self.o_sprite=24
+					if (self.winning_timer<=0) init_credits()
+					self.winning_timer-=1
+				end
 			else
-
-				local lx=self.x
-				local ly=self.y
-
 				--left
 				if btn(0) then
 					self.x-=self.v
@@ -314,7 +325,7 @@ function init_player()
 					self.o_sprite=28
 					self.flip_y=false
 				elseif (self.holding.down>0) then
-					--updown
+					--down
 					self.o_sprite=24
 					self.flip_y=false
 				end
@@ -325,12 +336,6 @@ function init_player()
 					self.o_sprite=24
 					if (self.holding.left==0 and self.holding.right==0 and self.holding.up==0 and self.holding.down==0) self.locked=false
 				end
-				-- sprite_timer
-				if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
-				self.sprite_timer-=1
-				--sprite_frame
-				if (self.sprite_frame>3) self.sprite_frame=0
-				self.sprite=self.o_sprite+self.sprite_frame
 
 				--effects
 				--switch
@@ -357,9 +362,7 @@ function init_player()
 					self.y+=2
 				end
 				--objective
-				if hit(self,5) then
-					if (self.collectables==4) init_credits()
-				end
+				if (hit(self,5) and self.collectables==4) self.winning=true
 
 				--rooms
 				if self.x<-8 then
@@ -439,6 +442,12 @@ function init_player()
 					if (self.rest==self.rest_period) self.energy+=1 self.rest=0
 				end
 			end
+			-- sprite_timer
+			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
+			self.sprite_timer-=1
+			--sprite_frame
+			if (self.sprite_frame>3) self.sprite_frame=0
+			self.sprite=self.o_sprite+self.sprite_frame
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
@@ -507,7 +516,7 @@ function init_enemy(x,y,sprite)
 			-- self.y+=self.vy
 			-- if(mhit(room.mapn,self,1)) self.vx=-self.vx self.vy=-self.vy
 
-			--ai
+			-- ai
 			local lx=self.x
 			local ly=self.y
 
