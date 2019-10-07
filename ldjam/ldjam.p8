@@ -62,7 +62,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[5]
+	room=rooms[19]
 
 	player=init_player()
 	game.update=update_game
@@ -526,7 +526,7 @@ function init_item(x,y,sprite)
 	}
 end
 
-function init_enemy(x,y,sprite)
+function init_enemy(x,y,sprite,health)
 	local timer=10
 	local move_timer=20
 	local moves=20
@@ -540,7 +540,7 @@ function init_enemy(x,y,sprite)
 		move_timer=move_timer,
 		-- vx=1,
 		-- vy=1,
-		health=3,
+		health=health,
 		sprite=sprite,
 		o_sprite=sprite,
 		sprite_frame=0,
@@ -840,8 +840,7 @@ function init_rooms()
 		init_item(7,0,6),
 		init_item(8,0,7),
 		init_item(13,13,38),
-		init_item(7,7,39),
-		init_enemy(7,7,56)
+		init_item(7,7,39)
 	})
 	local room_19=init_room(13,{nil,nil,14,nil},{})
 	local room_20=init_room(13,{nil,nil,15,nil},{})
