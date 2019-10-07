@@ -65,7 +65,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[133]
+	room=rooms[19]
 
 	player=init_player()
 	game.update=update_game
@@ -236,7 +236,7 @@ function init_player()
 		sprite_frame=0,
 		sprite_timer=timer,
 		health=8,
-		max_health=4,
+		max_health=8,
 		health_lock=0,
 		energy=0,
 		max_energy=0,
@@ -370,7 +370,7 @@ function init_player()
 				end
 				--heal
 				if hit(self,6) then
-					self.health=4
+					self.health=8
 					music(-1)
 					sfx(4)
 					music(1)
@@ -1371,7 +1371,10 @@ function init_rooms()
 		init_item(6,0,2),
 		init_item(7,0,2),
 		init_item(8,0,2),
-		init_item(9,0,2)
+		init_item(9,0,2),
+		init_enemy(4,4,64,2),
+		init_enemy(11,4,64,2),
+		init_enemy(8,10,64,2)
 	})
 	local room_141=init_room(0,{140,142,nil,147},{
 		init_item(6,0,2),
@@ -1389,7 +1392,9 @@ function init_rooms()
 		init_item(6,0,2),
 		init_item(7,0,2),
 		init_item(8,0,2),
-		init_item(9,0,2)
+		init_item(9,0,2),
+		init_enemy(8,5,80,3),
+		init_enemy(7,9,80,3)
 	})
 	local room_144=init_room(8,{143,nil,nil,150},{})
 	local room_145=init_room(0,{nil,146,139,151},{
@@ -1399,30 +1404,46 @@ function init_rooms()
 		init_item(0,9,17)
 	})
 	local room_146=init_room(0,{145,147,140,152},{})
-	local room_147=init_room(0,{146,148,141,153},{})
+	local room_147=init_room(0,{146,148,141,153},{
+		init_powerup(7,7,51),
+		init_enemy(7,4,80,3),
+		init_enemy(4,7,80,3),
+		init_enemy(11,8,80,3),
+		init_enemy(8,11,80,3)
+	})
 	local room_148=init_room(0,{147,149,142,154},{})
 	local room_149=init_room(0,{148,150,143,155},{})
 	local room_150=init_room(0,{149,nil,144,156},{
 		init_item(15,6,19),
 		init_item(15,7,19),
 		init_item(15,8,19),
-		init_item(15,9,19)
+		init_item(15,9,19),
+		init_enemy(9,5,56,1),
+		init_enemy(3,8,56,1)
 	})
 	local room_151=init_room(0,{nil,152,145,157},{
 		init_item(0,6,17),
 		init_item(0,7,17),
 		init_item(0,8,17),
-		init_item(0,9,17)
+		init_item(0,9,17),
+		init_enemy(7,7,56,1)
 	})
 	local room_152=init_room(0,{151,153,146,158},{})
 	local room_153=init_room(0,{152,154,147,159},{})
-	local room_154=init_room(0,{153,155,148,160},{})
+	local room_154=init_room(0,{153,155,148,160},{
+		init_enemy(7,3,80,3),
+		init_enemy(3,5,80,3),
+		init_enemy(11,5,80,3),
+		init_enemy(5,10,80,3),
+		init_enemy(9,10,80,3)
+	})
 	local room_155=init_room(0,{154,156,149,161},{})
 	local room_156=init_room(0,{155,nil,150,162},{
 		init_item(15,6,19),
 		init_item(15,7,19),
 		init_item(15,8,19),
-		init_item(15,9,19)
+		init_item(15,9,19),
+		init_item(7,7,39)
 	})
 	local room_157=init_room(0,{nil,158,151,163},{
 		init_item(0,6,17),
@@ -1430,7 +1451,9 @@ function init_rooms()
 		init_item(0,8,17),
 		init_item(0,9,17)
 	})
-	local room_158=init_room(0,{157,159,152,164},{})
+	local room_158=init_room(0,{157,159,152,164},{
+		init_enemy(7,7,64,2)
+	})
 	local room_159=init_room(0,{158,160,153,165},{})
 	local room_160=init_room(0,{159,161,154,166},{})
 	local room_161=init_room(0,{160,162,155,167},{})
@@ -1454,7 +1477,10 @@ function init_rooms()
 		init_item(15,6,19),
 		init_item(15,7,19),
 		init_item(15,8,19),
-		init_item(15,9,19)
+		init_item(15,9,19),
+		init_boss(7,7,104,7),
+		init_item(7,15,6),
+		init_item(8,15,7)
 	})
 	local room_169=init_room(9,{nil,170,163,nil},{})
 	local room_170=init_room(0,{169,171,164,nil},{
@@ -1479,9 +1505,14 @@ function init_rooms()
 		init_item(6,15,34),
 		init_item(7,15,34),
 		init_item(8,15,34),
-		init_item(9,15,34)
+		init_item(9,15,34),
+		init_boss(7,7,96,7),
+		init_item(15,7,6),
+		init_item(15,8,7)
 	})
-	local room_174=init_room(10,{173,nil,168,nil},{})
+	local room_174=init_room(10,{173,nil,168,nil},{
+		init_collectable(7,7,54)
+	})
 
 	add(rooms,room_0)
 	add(rooms,room_1)
@@ -1814,4 +1845,3 @@ __music__
 00 41424344
 00 41424344
 02 41474344
-
