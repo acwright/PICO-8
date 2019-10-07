@@ -64,7 +64,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[67]
+	room=rooms[74]
 
 	player=init_player()
 	game.update=update_game
@@ -1075,10 +1075,11 @@ function init_rooms()
 		init_item(8,15,7)
 	})
 	local room_74=init_room(13,{73,75,68,80},{
-		init_enemy(3,7,64,2),
-		init_enemy(9,2,64,2),
-		init_enemy(8,8,64,2),
-		init_enemy(8,8,64,2)
+		init_powerup(7,7,49),
+		init_enemy(4,4,64,2),
+		init_enemy(4,11,64,2),
+		init_enemy(11,11,64,2),
+		init_enemy(11,4,64,2)
 	})
 	local room_75=init_room(0,{74,76,69,81},{
 		init_item(0,6,17),
