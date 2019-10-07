@@ -62,10 +62,9 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[5]
+	room=rooms[19]
 
 	player=init_player()
-	waves={}
 	game.update=update_game
 	game.draw=draw_game
 end
@@ -73,17 +72,11 @@ end
 function update_game()
 	room:update()
 	player:update()
-	for wave in all(waves) do
-		wave:update()
-	end
 end
 
 function draw_game()
 	room:draw()
 	player:draw()
-	for wave in all(waves) do
-		wave:draw()
-	end
 end
 -->8
 --gameover
@@ -402,10 +395,10 @@ function init_player()
 			--secondary
 			if btnp(4) then
 				if self.level>2 and self.energy>=3 then
-					add(waves,init_wave(self.x,self.y,1,0,self.level*5))
-					add(waves,init_wave(self.x,self.y,-1,0,self.level*5))
-					add(waves,init_wave(self.x,self.y,0,1,self.level*5))
-					add(waves,init_wave(self.x,self.y,0,-1,self.level*5))
+					add(room.items,init_wave(self.x,self.y,1,0,self.level*5))
+					add(room.items,init_wave(self.x,self.y,-1,0,self.level*5))
+					add(room.items,init_wave(self.x,self.y,0,1,self.level*5))
+					add(room.items,init_wave(self.x,self.y,0,-1,self.level*5))
 					self.energy-=3
 				end
 			end
@@ -425,7 +418,7 @@ function init_player()
 				end
 
 				local wave=init_wave(self.x,self.y,v_x,v_y,self.level*5)
-				add(waves,wave)
+				add(room.items,wave)
 				self.energy-=1
 			end
 			--damage
@@ -496,7 +489,9 @@ function init_enemy(x,y,sprite)
 			self.x+=self.vx
 			self.y+=self.vy
 			if(mhit(room.mapn,self,1)) self.vx=-self.vx self.vy=-self.vy
-
+			if (hit(self,3)) then
+				del(room.items,self)
+			end
 			-- sprite_timer
 			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
 			self.sprite_timer-=1
@@ -519,6 +514,8 @@ function init_wave(x,y,v_x,v_y,life)
 		sprite_timer=timer,
 		x=x,
 		y=y,
+		w=8,
+		h=8,
 		v=3,
 		v_x=v_x,
 		v_y=v_y,
@@ -553,7 +550,7 @@ function init_wave(x,y,v_x,v_y,life)
 
 			--life
 			if self.life<=0 then
-				del(waves,self)
+				del(room.items,self)
 			end
 			self.life-=1
 		end,
@@ -729,12 +726,12 @@ function init_rooms()
 		--test items
 		init_item(3,2,16),
 		init_item(12,10,38),
-		init_item(7,5,48),
-		init_item(4,3,49),
-		init_item(6,2,50),
-		init_item(8,1,51),
+		init_powerup(7,5,48),
+		init_powerup(4,3,49),
+		init_powerup(6,2,50),
+		init_powerup(8,1,51),
 		init_item(3,12,39),
-		init_item(12,3,56)
+		init_enemy(12,3,56)
 	})
 	local room_19=init_room(13,{nil,nil,14,nil},{})
 	local room_20=init_room(13,{nil,nil,15,nil},{})
@@ -1471,7 +1468,7 @@ c000000000000000000000000000000cc000000000000000000000000000000cbbbbbbbbbbbbbbbb
 0000000000000000000000000000000000000000000000000000000000000000bbb4444444444444444444444444444444444444444444444444444444444bbb
 c000000000000000000000000000000cc000000000000000000000000000000cbbb4444444444444444444444444444444444444444444444444444444444bbb
 __gff__
-0002020202020a0a02020202020000000202000202020a0a0000000000000000800202020000044000000000000000001010101010101010010101010101010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0002020202020a0a02020202020808080202000202020a0a0000000000000000800202020000044000000000000000001010101010101010010101010101010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000200202020202020200000000000000000220202020202002000000000000000002202020202020020000000000000000022020202020200200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 0102020202020412120502020202020301020202020204121205020202020203010202020202020202020202020202030102020202031112121301020202020301020202020202020202020202020203010202020202041212130102020202030102020202020412120502020202020301020202020311121205020202020203
