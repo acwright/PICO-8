@@ -235,7 +235,7 @@ function init_player()
 		sprite=24,
 		sprite_frame=0,
 		sprite_timer=timer,
-		health=4,
+		health=8,
 		max_health=4,
 		health_lock=0,
 		energy=0,
@@ -489,7 +489,8 @@ function init_player()
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
 			local health=''
-			for i=1,self.health do
+			local health_n=ceil(self.health/2)
+			for i=1,health_n do
 				health=health..'♥'
 			end
 			print(health,0,0,8)
