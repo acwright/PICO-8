@@ -237,198 +237,207 @@ function init_player()
 		collectables=0,
 		holding={left=0,right=0,up=0,down=0},
 		update=function(self)
-
 			--death
-			-- if self.health<=0 then
-			-- 	if self.o_sprite==44 then
-			-- 		self.frame+=1
-			-- 	else
-			-- 		self.o_sprite=44
-			-- 		self.frame=0
-			-- 	end
-			-- 	return
-			-- end
-
-			local lx=self.x
-			local ly=self.y
-
-			--left
-			if btn(0) then
-				self.x-=self.v
-				self.holding.left+=1
+			if self.health<=0 then
+				if self.o_sprite==44 then
+					if self.sprite<47 then
+						if self.timer<=0 then
+							self.sprite+=1 self.timer=11
+							if (self.sprite==47) self.timer=30
+						end
+					else
+						if (self.timer<=0) init_menu()
+					end
+					self.timer-=1
+				else
+					self.o_sprite=44
+					self.sprite=44
+					self.frame=0
+					self.timer=timer
+				end
 			else
-				--no longer holding
-				self.holding.left=0
-			end
-			--right
-			if btn(1) then
-				self.x+=self.v
-				self.holding.right+=1
-			else
-				--no longer holding
-				self.holding.right=0
-			end
 
-			if (mhit(room.mapn,self,1) or hit(self,1)) self.x=lx
+				local lx=self.x
+				local ly=self.y
 
-			--up
-			if btn(2) then
-				self.y-=self.v
-				self.holding.up+=1
-			else
-					--no longer holding
-					self.holding.up=0
-			end
-			--down
-			if btn(3) then
-				self.y+=self.v
-				self.holding.down+=1
-			else
-				--no longer holding
-				self.holding.down=0
-			end
-
-			if (mhit(room.mapn,self,1) or hit(self,1)) self.y=ly
-
-
-
-			--longest held direction
-			if (self.holding.left>self.holding.right) and (self.holding.left>self.holding.up) and (self.holding.left>self.holding.down) then
 				--left
-				self.o_sprite=40
-				self.flip_x=false
-			elseif (self.holding.right>self.holding.up) and (self.holding.right>self.holding.down) then
+				if btn(0) then
+					self.x-=self.v
+					self.holding.left+=1
+				else
+					--no longer holding
+					self.holding.left=0
+				end
 				--right
-				self.o_sprite=40
-				self.flip_x=true
-			elseif (self.holding.up>self.holding.down) then
+				if btn(1) then
+					self.x+=self.v
+					self.holding.right+=1
+				else
+					--no longer holding
+					self.holding.right=0
+				end
+
+				if (mhit(room.mapn,self,1) or hit(self,1)) self.x=lx
+
 				--up
-				self.o_sprite=28
-				self.flip_y=false
-			elseif (self.holding.down>0) then
-				--updown
-				self.o_sprite=24
-				self.flip_y=false
-			end
-			--lock movement after elevator
-			if self.locked then
-				self.x=lx
-				self.y=ly
-				self.o_sprite=24
-				if (self.holding.left==0 and self.holding.right==0 and self.holding.up==0 and self.holding.down==0) self.locked=false
-			end
-			-- sprite_timer
-			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
-			self.sprite_timer-=1
-			--sprite_frame
-			if (self.sprite_frame>3) self.sprite_frame=0
-			self.sprite=self.o_sprite+self.sprite_frame
-
-			--effects
-			--switch
-			if (hit(self,2)) room:unlock()
-			--pickup
-			local pickup=hit(self,4)
-			if pickup then
-				if (pickup.powerup) self.level+=1 self.energy+=1 self.max_energy+=1
-				if (pickup.collectable) self.collectables+=1
-				del(room.items,pickup)
-			end
-			--heal
-			if (hit(self,6) and self.health<=4) self.health=4
-			--elevator
-			local el=hit(self,7)
-			if el then
-				room=rooms[el.room+1]
-				self.locked=true
-				if el.v>0 then
-					self.x=76
+				if btn(2) then
+					self.y-=self.v
+					self.holding.up+=1
 				else
-					self.x=44
+						--no longer holding
+						self.holding.up=0
 				end
-				self.y+=2
-			end
-			--objective
-			if hit(self,5) then
-				if (self.collectables==4) init_credits()
-			end
-
-			--rooms
-			if self.x<-8 then
-				local next_dir=room.dirs[1]
-				if next_dir then
-					room=rooms[next_dir+1]
-					self.x=128
+				--down
+				if btn(3) then
+					self.y+=self.v
+					self.holding.down+=1
 				else
-					self.x=0
-				end
-			end
-			if self.x>128 then
-				local next_dir=room.dirs[2]
-				if next_dir then
-					room=rooms[next_dir+1]
-					self.x=-8
-				else
-					self.x=120
-				end
-			end
-			if self.y<-8 then
-				local next_dir=room.dirs[3]
-				if next_dir then
-					room=rooms[next_dir+1]
-					self.y=120
-				else
-					self.y=0
-				end
-			end
-			if self.y>128 then
-				local next_dir=room.dirs[4]
-				if next_dir then
-
-					room=rooms[next_dir+1]
-					self.y=-8
-				else
-					self.y=120
-				end
-			end
-			--actions
-			--secondary
-			if btnp(4) then
-				if self.level>2 and self.energy>=3 then
-					add(room.items,init_wave(self.x,self.y,1,0,self.level*5))
-					add(room.items,init_wave(self.x,self.y,-1,0,self.level*5))
-					add(room.items,init_wave(self.x,self.y,0,1,self.level*5))
-					add(room.items,init_wave(self.x,self.y,0,-1,self.level*5))
-					self.energy-=3
-				end
-			end
-			--primary
-			if btnp(5) then
-				if (self.energy<1) return
-				local v_x=0
-				local v_y=0
-				if self.o_sprite==24 then
-					v_y=1
-				elseif self.o_sprite==28 then
-					v_y=-1
-				elseif(self.o_sprite==40 and self.flip_x == false) then
-					v_x=-1
-				else
-					v_x=1
+					--no longer holding
+					self.holding.down=0
 				end
 
-				local wave=init_wave(self.x,self.y,v_x,v_y,self.level*5)
-				add(room.items,wave)
-				self.energy-=1
-			end
-			--damage
-			if (hit(self,0) and self.health_lock==0) self.health-=1 self.health_lock=health_lock
-			if (self.health_lock>0) self.health_lock-=1
+				if (mhit(room.mapn,self,1) or hit(self,1)) self.y=ly
 
-			--energy
-			if self.energy<self.max_energy then
-				self.rest+=1
-				if (self.rest==self.rest_period) self.energy+=1 self.rest=0
+
+
+				--longest held direction
+				if (self.holding.left>self.holding.right) and (self.holding.left>self.holding.up) and (self.holding.left>self.holding.down) then
+					--left
+					self.o_sprite=40
+					self.flip_x=false
+				elseif (self.holding.right>self.holding.up) and (self.holding.right>self.holding.down) then
+					--right
+					self.o_sprite=40
+					self.flip_x=true
+				elseif (self.holding.up>self.holding.down) then
+					--up
+					self.o_sprite=28
+					self.flip_y=false
+				elseif (self.holding.down>0) then
+					--updown
+					self.o_sprite=24
+					self.flip_y=false
+				end
+				--lock movement after elevator
+				if self.locked then
+					self.x=lx
+					self.y=ly
+					self.o_sprite=24
+					if (self.holding.left==0 and self.holding.right==0 and self.holding.up==0 and self.holding.down==0) self.locked=false
+				end
+				-- sprite_timer
+				if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
+				self.sprite_timer-=1
+				--sprite_frame
+				if (self.sprite_frame>3) self.sprite_frame=0
+				self.sprite=self.o_sprite+self.sprite_frame
+
+				--effects
+				--switch
+				if (hit(self,2)) room:unlock()
+				--pickup
+				local pickup=hit(self,4)
+				if pickup then
+					if (pickup.powerup) self.level+=1 self.energy+=1 self.max_energy+=1
+					if (pickup.collectable) self.collectables+=1
+					del(room.items,pickup)
+				end
+				--heal
+				if (hit(self,6) and self.health<=4) self.health=4
+				--elevator
+				local el=hit(self,7)
+				if el then
+					room=rooms[el.room+1]
+					self.locked=true
+					if el.v>0 then
+						self.x=76
+					else
+						self.x=44
+					end
+					self.y+=2
+				end
+				--objective
+				if hit(self,5) then
+					if (self.collectables==4) init_credits()
+				end
+
+				--rooms
+				if self.x<-8 then
+					local next_dir=room.dirs[1]
+					if next_dir then
+						room=rooms[next_dir+1]
+						self.x=128
+					else
+						self.x=0
+					end
+				end
+				if self.x>128 then
+					local next_dir=room.dirs[2]
+					if next_dir then
+						room=rooms[next_dir+1]
+						self.x=-8
+					else
+						self.x=120
+					end
+				end
+				if self.y<-8 then
+					local next_dir=room.dirs[3]
+					if next_dir then
+						room=rooms[next_dir+1]
+						self.y=120
+					else
+						self.y=0
+					end
+				end
+				if self.y>128 then
+					local next_dir=room.dirs[4]
+					if next_dir then
+
+						room=rooms[next_dir+1]
+						self.y=-8
+					else
+						self.y=120
+					end
+				end
+				--actions
+				--secondary
+				if btnp(4) then
+					if self.level>2 and self.energy>=3 then
+						add(room.items,init_wave(self.x,self.y,1,0,self.level*5))
+						add(room.items,init_wave(self.x,self.y,-1,0,self.level*5))
+						add(room.items,init_wave(self.x,self.y,0,1,self.level*5))
+						add(room.items,init_wave(self.x,self.y,0,-1,self.level*5))
+						self.energy-=3
+					end
+				end
+				--primary
+				if btnp(5) then
+					if (self.energy<1) return
+					local v_x=0
+					local v_y=0
+					if self.o_sprite==24 then
+						v_y=1
+					elseif self.o_sprite==28 then
+						v_y=-1
+					elseif(self.o_sprite==40 and self.flip_x == false) then
+						v_x=-1
+					else
+						v_x=1
+					end
+
+					local wave=init_wave(self.x,self.y,v_x,v_y,self.level*5)
+					add(room.items,wave)
+					self.energy-=1
+				end
+				--damage
+				if (hit(self,0) and self.health_lock==0) self.health-=1 self.health_lock=health_lock
+				if (self.health_lock>0) self.health_lock-=1
+
+				--energy
+				if self.energy<self.max_energy then
+					self.rest+=1
+					if (self.rest==self.rest_period) self.energy+=1 self.rest=0
+				end
 			end
 		end,
 		draw=function(self)
@@ -695,6 +704,7 @@ function init_room(mapn,dirs,items)
 			end
 		end,
 		update=function(self)
+			if (player.health<=0) return
 			for item in all(self.items) do
 				item:update()
 			end
