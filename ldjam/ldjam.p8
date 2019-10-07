@@ -7,7 +7,8 @@ __lua__
 function _init()
 	game={}
 	music(1)
-	init_menu()
+	-- init_menu()
+	init_game()
 end
 
 function _update60()
@@ -64,7 +65,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[74]
+	room=rooms[98]
 
 	player=init_player()
 	game.update=update_game
@@ -234,7 +235,7 @@ function init_player()
 		sprite=24,
 		sprite_frame=0,
 		sprite_timer=timer,
-		health=4,
+		health=8,
 		max_health=4,
 		health_lock=0,
 		energy=0,
@@ -488,7 +489,8 @@ function init_player()
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
 			local health=''
-			for i=1,self.health do
+			local health_n=ceil(self.health/2)
+			for i=1,health_n do
 				health=health..'♥'
 			end
 			print(health,0,0,8)
@@ -630,7 +632,7 @@ function init_boss(x,y,sprite,health)
 			--damage
 			local wave=hit(self,3)
 			if (hit(self,3)) self.health-=1 del(room.items,wave)
-			if (self.health<=0) del(room.items,self)
+			if (self.health<=0) del(room.items,self) room:unlock()
 
 			-- sprite_timer
 			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
@@ -857,16 +859,29 @@ function init_rooms()
 		init_item(15,7,19),
 		init_item(15,8,19),
 		init_item(15,9,19),
+		init_item(1,8,8),
+		init_item(1,8,8),
+		init_item(14,8,8),
+		init_enemy(2,2,56,1),
 		init_up_elevator(21)
 	})
 	local room_1=init_room(12,{nil,nil,nil,3},{
-		init_item(7,7,39)
+		init_item(7,7,39),
+		init_item(6,14,10),
+		init_item(9,14,10)
 	})
-	local room_2=init_room(3,{nil,nil,0,4},{})
+	local room_2=init_room(3,{nil,nil,0,4},{
+		init_enemy(3,14,56,1),
+		init_item(3,9,9),
+		init_item(4,9,9)
+	})
 	local room_3=init_room(3,{nil,nil,1,7},{
 		init_item(7,0,6),
 		init_item(8,0,7),
-		init_item(2,2,38)
+		init_item(2,2,38),
+		init_item(2,2,38),
+		init_item(2,13,9),
+		init_item(13,13,12)
 	})
 	local room_4=init_room(9,{nil,5,2,nil},{
 		init_item(7,0,6),
@@ -877,18 +892,38 @@ function init_rooms()
 	local room_5=init_room(2,{4,6,nil,nil},{
 		init_item(7,5,6),
 		init_item(8,5,7),
+		init_item(13,2,11,true),
 		init_item(13,13,38)
 	})
-	local room_6=init_room(2,{5,7,nil,nil},{})
-	local room_7=init_room(6,{6,8,3,nil},{})
+	local room_6=init_room(2,{5,7,nil,nil},{
+		init_item(2,2,9)
+	})
+	local room_7=init_room(6,{6,8,3,nil},{
+		init_item(13,2,11,true),
+		init_item(13,13,9)
+	})
 	local room_8=init_room(8,{7,nil,nil,9},{})
-	local room_9=init_room(7,{nil,10,8,16},{})
-	local room_10=init_room(2,{9,11,nil,nil},{})
-	local room_11=init_room(14,{10,nil,nil,nil},{})
+	local room_9=init_room(7,{nil,10,8,16},{
+		init_item(2,13,9)
+	})
+	local room_10=init_room(2,{9,11,nil,nil},{
+		init_item(15,7,6),
+		init_item(15,8,7),
+		init_item(2,2,38)
+	})
+	local room_11=init_room(14,{10,nil,nil,nil},{
+		init_enemy(13,13,64,2)
+	})
 	local room_12=init_room(11,{nil,13,nil,17},{})
-	local room_13=init_room(4,{12,14,nil,18},{})
-	local room_14=init_room(4,{13,15,nil,19},{})
-	local room_15=init_room(4,{14,16,nil,20},{})
+	local room_13=init_room(4,{12,14,nil,18},{
+		init_item(2,13,9)
+	})
+	local room_14=init_room(4,{13,15,nil,19},{
+		init_item(2,13,9)
+	})
+	local room_15=init_room(4,{14,16,nil,20},{
+		init_item(2,2,8)
+	})
 	local room_16=init_room(10,{15,nil,9,nil},{})
 	local room_17=init_room(13,{nil,nil,12,nil},{})
 	local room_18=init_room(13,{nil,nil,13,nil},{
@@ -898,7 +933,10 @@ function init_rooms()
 		init_item(7,7,39)
 	})
 	local room_19=init_room(13,{nil,nil,14,nil},{})
-	local room_20=init_room(13,{nil,nil,15,nil},{})
+	local room_20=init_room(13,{nil,nil,15,nil},{
+		init_item(13,7,11,true),
+		init_item(12,8,11,true)
+	})
 
 	--level 2
 
@@ -1068,9 +1106,7 @@ function init_rooms()
 		init_item(15,7,19),
 		init_item(15,8,19),
 		init_item(15,9,19),
-		init_enemy(5,10,64,2),
-		init_enemy(10,10,64,2),
-		init_item(4,4,38),
+		init_boss(4,11,96,7),
 		init_item(7,15,6),
 		init_item(8,15,7)
 	})
@@ -1099,7 +1135,9 @@ function init_rooms()
 		init_item(15,8,19),
 		init_item(15,9,19)
 	})
-	local room_79=init_room(13,{nil,80,73,86},{})
+	local room_79=init_room(13,{nil,80,73,86},{
+		init_collectable(7,7,53)
+	})
 	local room_80=init_room(1,{79,81,74,87},{
 		init_item(0,6,17),
 		init_item(0,7,17),
@@ -1112,14 +1150,18 @@ function init_rooms()
 		init_down_elevator(21),
 		init_up_elevator(102)
 	})
-	local room_81=init_room(0,{80,82,75,88},{})
+	local room_81=init_room(0,{80,82,75,88},{
+		init_enemy(7,6,64,2),
+		init_enemy(12,3,64,2)
+	})
 	local room_82=init_room(2,{81,83,76,89},{})
 	local room_83=init_room(14,{82,nil,77,83},{})
 	local room_84=init_room(0,{nil,85,78,91},{
 		init_item(0,6,17),
 		init_item(0,7,17),
 		init_item(0,8,17),
-		init_item(0,9,17)
+		init_item(0,9,17),
+		init_enemy(8,8,64,2)
 	})
 	local room_85=init_room(2,{84,86,nil,nil},{})
 	local room_86=init_room(0,{85,87,79,nil},{
@@ -1135,7 +1177,10 @@ function init_rooms()
 	local room_87=init_room(0,{86,88,80,92},{})
 	local room_88=init_room(0,{87,89,81,93},{})
 	local room_89=init_room(2,{88,90,nil,nil},{})
-	local room_90=init_room(8,{89,nil,nil,94},{})
+	local room_90=init_room(8,{89,nil,nil,94},{
+		init_enemy(7,5,64,2),
+		init_enemy(7,10,64,2)
+	})
 	local room_91=init_room(3,{nil,nil,84,95},{})
 	local room_92=init_room(3,{nil,nil,87,98},{})
 	local room_93=init_room(3,{nil,nil,88,99},{})
@@ -1150,10 +1195,17 @@ function init_rooms()
 		init_item(6,15,34),
 		init_item(7,15,34),
 		init_item(8,15,34),
-		init_item(9,15,34)
+		init_item(9,15,34),
+		init_item(15,7,6),
+		init_item(15,8,7),
+		init_item(11,11,38)
 	})
-	local room_98=init_room(10,{97,nil,92,nil},{})
-	local room_99=init_room(9,{nil,100,93,nil},{})
+	local room_98=init_room(10,{97,nil,92,nil},{
+		init_item(7,7,39)
+	})
+	local room_99=init_room(9,{nil,100,93,nil},{
+		init_enemy(4,8,64,2)
+	})
 	local room_100=init_room(2,{99,101,nil,nil},{})
 	local room_101=init_room(10,{100,nil,94,nil},{})
 
@@ -1678,7 +1730,7 @@ ecaaaaceecaaaaceecaaaaceecaaaace900aacee000aacee000aacee090aacee0000000dd0000000
 22222222122222221222222212222222122222221222222212222222122222225654444444444444444444454444444444444444444444444444444444444655
 52222222222222222222222222222222222222222222222222222222222222225564444444444444444444444444444454444444444444444444444444444565
 __gff__
-0002020202020a0a02020202020808080202000202020a0a0000000000000000800202020000044000000000000000001010101010101010010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101
+0002020202020a0a02020202010808080202000202020a0a0000000000000000800202020000044000000000000000001010101010101010010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101
 0000000000002000202020202020202000000000000000002020202020202020000000000000000020202020202020202000000000000000202020202020202000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 0102020202020412120502020202020301020202020204121205020202020203010202020202020202020202020202030102020202031112121301020202020301020202020202020202020202020203010202020202041212130102020202030102020202020412120502020202020301020202020311121205020202020203
