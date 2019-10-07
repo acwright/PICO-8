@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
---ldjam
+--bon planto
 --infinite token
 
 function _init()
@@ -1882,3 +1882,4 @@ __music__
 00 41424344
 00 41424344
 02 41474344
+
