@@ -65,7 +65,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-	room=rooms[38]
+	room=rooms[133]
 
 	player=init_player()
 	game.update=update_game
@@ -1143,17 +1143,16 @@ function init_rooms()
 		init_item(15,7,19),
 		init_item(15,8,19),
 		init_item(15,9,19),
-		init_enemy(5,10,64,2),
-		init_enemy(10,10,64,2),
-		init_item(4,4,38),
+		init_boss(4,11,96,7),
 		init_item(7,15,6),
 		init_item(8,15,7)
 	})
 	local room_74=init_room(13,{73,75,68,80},{
-		init_enemy(3,7,64,2),
-		init_enemy(9,2,64,2),
-		init_enemy(8,8,64,2),
-		init_enemy(8,8,64,2)
+		init_powerup(7,7,49),
+		init_enemy(4,4,64,2),
+		init_enemy(4,11,64,2),
+		init_enemy(11,11,64,2),
+		init_enemy(11,4,64,2)
 	})
 	local room_75=init_room(0,{74,76,69,81},{
 		init_item(0,6,17),
@@ -1173,7 +1172,9 @@ function init_rooms()
 		init_item(15,8,19),
 		init_item(15,9,19)
 	})
-	local room_79=init_room(13,{nil,80,73,86},{})
+	local room_79=init_room(13,{nil,80,73,86},{
+		init_collectable(7,7,53)
+	})
 	local room_80=init_room(1,{79,81,74,87},{
 		init_item(0,6,17),
 		init_item(0,7,17),
@@ -1186,14 +1187,18 @@ function init_rooms()
 		init_down_elevator(21),
 		init_up_elevator(102)
 	})
-	local room_81=init_room(0,{80,82,75,88},{})
+	local room_81=init_room(0,{80,82,75,88},{
+		init_enemy(7,6,64,2),
+		init_enemy(12,3,64,2)
+	})
 	local room_82=init_room(2,{81,83,76,89},{})
 	local room_83=init_room(14,{82,nil,77,83},{})
 	local room_84=init_room(0,{nil,85,78,91},{
 		init_item(0,6,17),
 		init_item(0,7,17),
 		init_item(0,8,17),
-		init_item(0,9,17)
+		init_item(0,9,17),
+		init_enemy(8,8,64,2)
 	})
 	local room_85=init_room(2,{84,86,nil,nil},{})
 	local room_86=init_room(0,{85,87,79,nil},{
@@ -1209,7 +1214,10 @@ function init_rooms()
 	local room_87=init_room(0,{86,88,80,92},{})
 	local room_88=init_room(0,{87,89,81,93},{})
 	local room_89=init_room(2,{88,90,nil,nil},{})
-	local room_90=init_room(8,{89,nil,nil,94},{})
+	local room_90=init_room(8,{89,nil,nil,94},{
+		init_enemy(7,5,64,2),
+		init_enemy(7,10,64,2)
+	})
 	local room_91=init_room(3,{nil,nil,84,95},{})
 	local room_92=init_room(3,{nil,nil,87,98},{})
 	local room_93=init_room(3,{nil,nil,88,99},{})
@@ -1224,10 +1232,17 @@ function init_rooms()
 		init_item(6,15,34),
 		init_item(7,15,34),
 		init_item(8,15,34),
-		init_item(9,15,34)
+		init_item(9,15,34),
+		init_item(15,7,6),
+		init_item(15,8,7),
+		init_item(11,11,38)
 	})
-	local room_98=init_room(10,{97,nil,92,nil},{})
-	local room_99=init_room(9,{nil,100,93,nil},{})
+	local room_98=init_room(10,{97,nil,92,nil},{
+		init_item(7,7,39)
+	})
+	local room_99=init_room(9,{nil,100,93,nil},{
+		init_enemy(4,8,64,2)
+	})
 	local room_100=init_room(2,{99,101,nil,nil},{})
 	local room_101=init_room(10,{100,nil,94,nil},{})
 
@@ -1253,13 +1268,16 @@ function init_rooms()
 		init_item(6,0,2),
 		init_item(7,0,2),
 		init_item(8,0,2),
-		init_item(9,0,2)
+		init_item(9,0,2),
+		init_enemy(5,5,80,3),
+		init_enemy(10,10,80,3)
 	})
 	local room_104=init_room(0,{103,105,nil,109},{
 		init_item(6,0,2),
 		init_item(7,0,2),
 		init_item(8,0,2),
-		init_item(9,0,2)
+		init_item(9,0,2),
+		init_enemy(8,8,80,3)
 	})
 	local room_105=init_room(2,{104,106,nil,nil},{})
 	local room_106=init_room(2,{105,107,nil,nil},{})
@@ -1270,9 +1288,17 @@ function init_rooms()
 		init_item(0,8,17),
 		init_item(0,9,17)
 	})
-	local room_109=init_room(10,{108,nil,104,nil},{})
+	local room_109=init_room(10,{108,nil,104,nil},{
+		init_enemy(5,10,56,1),
+		init_enemy(10,5,64,2)
+	})
 	local room_110=init_room(7,{nil,111,107,115},{})
-	local room_111=init_room(14,{110,nil,nil,nil},{})
+	local room_111=init_room(14,{110,nil,nil,nil},{
+		init_enemy(4,4,80,3),
+		init_enemy(4,11,80,3),
+		init_enemy(11,11,80,3),
+		init_enemy(11,4,80,3)
+	})
 	local room_112=init_room(3,{nil,nil,108,116},{})
 	local room_113=init_room(0,{nil,114,nil,nil},{
 		init_item(0,6,17),
@@ -1286,10 +1312,17 @@ function init_rooms()
 		init_item(6,15,34),
 		init_item(7,15,34),
 		init_item(8,15,34),
-		init_item(9,15,34)
+		init_item(9,15,34),
+		init_enemy(4,4,80,3),
+		init_enemy(4,11,80,3),
+		init_enemy(11,11,80,3),
+		init_enemy(11,4,80,3),
+		init_powerup(6,2,50)
 	})
 	local room_114=init_room(8,{113,nil,nil,119},{})
-	local room_115=init_room(13,{nil,nil,110,nil},{})
+	local room_115=init_room(13,{nil,nil,110,nil},{
+		init_item(7,7,39)
+	})
 	local room_116=init_room(9,{nil,117,112,nil},{})
 	local room_117=init_room(2,{116,118,nil,nil},{})
 	local room_118=init_room(0,{117,119,nil,120},{
@@ -1298,7 +1331,10 @@ function init_rooms()
 		init_item(8,0,2),
 		init_item(9,0,2)
 	})
-	local room_119=init_room(10,{118,nil,114,nil},{})
+	local room_119=init_room(10,{118,nil,114,nil},{
+		init_enemy(5,5,56,1),
+		init_enemy(10,10,56,1)
+	})
 	local room_120=init_room(9,{nil,121,118,nil},{})
 	local room_121=init_room(8,{120,nil,nil,127},{})
 	local room_122=init_room(11,{nil,123,nil,129},{})
@@ -1318,7 +1354,10 @@ function init_rooms()
 		init_item(6,15,34),
 		init_item(7,15,34),
 		init_item(8,15,34),
-		init_item(9,15,34)
+		init_item(9,15,34),
+		init_item(0,7,6),
+		init_item(0,8,7),
+		init_boss(4,11,104,7)
 	})
 	local room_127=init_room(0,{126,128,121,134},{})
 	local room_128=init_room(0,{127,129,nil,nil},{
@@ -1335,12 +1374,17 @@ function init_rooms()
 		init_item(6,15,34),
 		init_item(7,15,34),
 		init_item(8,15,34),
-		init_item(9,15,34)
+		init_item(9,15,34),
+		init_enemy(8,4,80,3),
+		init_enemy(3,10,80,3),
+		init_enemy(12,12,64,2)
 	})
 	local room_130=init_room(10,{129,nil,123,nil},{})
 	local room_131=init_room(3,{nil,nil,124,138},{})
 	local room_132=init_room(9,{nil,133,125,nil},{})
-	local room_133=init_room(14,{132,nil,nil,nil},{})
+	local room_133=init_room(14,{132,nil,nil,nil},{
+		init_collectable(13,13,54)
+	})
 	local room_134=init_room(9,{nil,135,127,nil},{})
 	local room_135=init_room(2,{134,136,nil,nil},{})
 	local room_136=init_room(2,{135,137,nil,nil},{})
