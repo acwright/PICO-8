@@ -474,24 +474,58 @@ end
 
 function init_enemy(x,y,sprite)
 	local timer=10
+	local move_timer=20
+	local moves=20
 	return {
 		x=x*8,
 		y=y*8,
 		w=8,
 		h=8,
-		vx=1,
-		vy=1,
+		v=1,
+		moves=0,
+		move_timer=move_timer,
+		-- vx=1,
+		-- vy=1,
+		health=3,
 		sprite=sprite,
 		o_sprite=sprite,
 		sprite_frame=0,
 		sprite_timer=timer,
 		update=function(self)
-			self.x+=self.vx
-			self.y+=self.vy
-			if(mhit(room.mapn,self,1)) self.vx=-self.vx self.vy=-self.vy
-			if (hit(self,3)) then
-				del(room.items,self)
+
+
+			-- self.x+=self.vx
+			-- self.y+=self.vy
+			-- if(mhit(room.mapn,self,1)) self.vx=-self.vx self.vy=-self.vy
+
+			--ai
+			local lx=self.x
+			local ly=self.y
+
+			if self.moves>0 then
+				if player.x < self.x then self.x-=self.v else self.x+=self.v end
+				if (mhit(room.mapn,self,1) or hit(self,1)) self.x=lx
+
+				if player.y < self.y then self.y-=self.v else self.y+=self.v end
+				if (mhit(room.mapn,self,1) or hit(self,1)) self.y=ly
+
+				self.moves-=1
+			else
+				if self.move_timer<=0 then
+					self.moves=moves
+					self.move_timer=move_timer
+				else
+					self.move_timer-=1
+				end
 			end
+
+			if (mhit(room.mapn,self,1) or hit(self,1)) self.x=lx self.y=ly
+
+			--damage
+			local wave=hit(self,3)
+			if (hit(self,3)) self.health-=1 del(room.items,wave)
+			if (self.health<=0) del(room.items,self)
+
 			-- sprite_timer
 			if (self.sprite_timer<=0) self.sprite_timer=timer self.sprite_frame+=1
 			self.sprite_timer-=1
@@ -731,7 +765,10 @@ function init_rooms()
 		init_powerup(6,2,50),
 		init_powerup(8,1,51),
 		init_item(3,12,39),
-		init_enemy(12,3,56)
+		-- init_enemy(2,2,56),
+		-- init_enemy(13,2,56),
+		-- init_enemy(13,13,56),
+		init_enemy(2,13,56)
 	})
 	local room_19=init_room(13,{nil,nil,14,nil},{})
 	local room_20=init_room(13,{nil,nil,15,nil},{})
