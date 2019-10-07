@@ -65,11 +65,7 @@ end
 
 function init_game()
 	rooms=init_rooms()
-<<<<<<< HEAD
 	room=rooms[15]
-=======
-	room=rooms[67]
->>>>>>> b727f2398a04df7b055e9a624c8f280d6acf2855
 
 	player=init_player()
 	game.update=update_game
