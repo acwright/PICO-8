@@ -463,7 +463,7 @@ function init_player()
 					sfx(0)
 				end
 				--damage
-				if (hit(self,0) and self.health_lock==0) self.health-=1 self.health_lock=health_lock
+				if (hit(self,0) and self.health_lock==0) sfx(3) self.health-=1 self.health_lock=health_lock
 				if (self.health_lock>0) self.health_lock-=1
 
 				--energy
