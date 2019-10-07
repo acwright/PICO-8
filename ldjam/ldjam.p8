@@ -232,12 +232,11 @@ function init_player()
 		sprite=24,
 		sprite_frame=0,
 		sprite_timer=timer,
-		level=1,
 		health=4,
 		max_health=4,
 		health_lock=0,
 		energy=0,
-		max_energy=0,
+		max_energy=4,
 		rest=0,
 		rest_period=20,
 		locked=false,
@@ -352,7 +351,6 @@ function init_player()
 				local pickup=hit(self,4)
 				if pickup then
 					if (pickup.powerup) then
-						self.level+=1
 						self.energy+=1
 						self.max_energy+=1
 						music(-1)
@@ -433,11 +431,11 @@ function init_player()
 				--actions
 				--secondary
 				if btnp(4) then
-					if self.level>2 and self.energy>=3 then
-						add(room.items,init_wave(self.x,self.y,1,0,self.level*5))
-						add(room.items,init_wave(self.x,self.y,-1,0,self.level*5))
-						add(room.items,init_wave(self.x,self.y,0,1,self.level*5))
-						add(room.items,init_wave(self.x,self.y,0,-1,self.level*5))
+					if self.energy>=3 then
+						add(room.items,init_wave(self.x,self.y,1,0,self.max_enery*5))
+						add(room.items,init_wave(self.x,self.y,-1,0,self.max_enery*5))
+						add(room.items,init_wave(self.x,self.y,0,1,self.max_enery*5))
+						add(room.items,init_wave(self.x,self.y,0,-1,self.max_enery*5))
 						self.energy-=3
 					end
 				end
@@ -456,7 +454,7 @@ function init_player()
 						v_x=1
 					end
 
-					local wave=init_wave(self.x,self.y,v_x,v_y,self.level*5)
+					local wave=init_wave(self.x,self.y,v_x,v_y,self.max_energy*5)
 					add(room.items,wave)
 					self.energy-=1
 
@@ -510,15 +508,15 @@ function init_player()
 	}
 end
 
-function init_item(x,y,sprite)
+function init_item(x,y,sprite,destructable)
 	return {
 		x=x*8,
 		y=y*8,
 		w=8,
 		h=8,
+		destructable=destructable,
 		sprite=sprite,
 		update=function(self)
-
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y)
@@ -693,6 +691,9 @@ function init_wave(x,y,v_x,v_y,life)
 				del(room.items,self)
 			end
 			self.life-=1
+
+			local hit=hit(self,1)
+			if (hit and hit.destructable) del(room.items,hit) del(room.items,self)
 		end,
 		draw=function(self)
 			spr(self.sprite,self.x,self.y,1,1,self.flip_x,self.flip_y)
@@ -1684,4 +1685,3 @@ __music__
 00 41424344
 00 41424344
 02 41474344
-
