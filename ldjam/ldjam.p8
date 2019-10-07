@@ -243,7 +243,7 @@ function init_player()
 					if self.sprite<47 then
 						if self.timer<=0 then
 							self.sprite+=1 self.timer=11
-							if (self.sprite==47) self.timer=30
+							if (self.sprite==47) self.timer=40
 						end
 					else
 						if (self.timer<=0) init_menu()
