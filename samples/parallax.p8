@@ -1,8 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
-version 18
+version 43
 __lua__
 --parallax
---by aaron wright
+--by ac wright
 
 function _init()
 	mtn_x=0

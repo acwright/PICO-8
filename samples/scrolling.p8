@@ -1,8 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
-version 18
+version 43
 __lua__
 --scrolling
---by aaron wright
+--by ac wright
 
 function _init()
 	map_x=0
