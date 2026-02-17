@@ -1,15 +1,15 @@
-Pico-8
+PICO-8
 ======
 
 A repository of my Pico-8 games and demos.
 
-## How to Run Pico-8 Games
+## How to Run PICO-8 Games
 
 ### Prerequisites
-- Download and install [Pico-8](https://www.lexaloffle.com/pico-8.php) from the official website
+- Download and install [PICO-8](https://www.lexaloffle.com/pico-8.php) from the official website
 
 ### Running Games
-1. Open Pico-8
+1. Open PICO-8
 2. Use the `load` command to load a game file:
    ```
    load filename.p8
@@ -20,7 +20,7 @@ A repository of my Pico-8 games and demos.
    ```
 
 ### Alternative Method
-- Drag and drop a `.p8` or `.p8.png` file directly into the Pico-8 window
+- Drag and drop a `.p8` or `.p8.png` file directly into the PICO-8 window
 - Press the play button or use keyboard shortcut to start
 
 ### Web Version
