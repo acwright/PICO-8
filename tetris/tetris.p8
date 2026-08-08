@@ -166,11 +166,53 @@ end
 -->8
 --movements
 
+function fits(shape,pos)
+	local y=0
+	for _y in all(shape) do
+		local x=0
+		for _x in all(_y) do
+			if _x>0 then
+				local cx=pos.x+x
+				local cy=pos.y+y
+				if cx<0 or cx>7 then
+					return false
+				end
+				if cy<0 or cy>11 then
+					return false
+				end
+				if stack[cy+1][cx+1]!=6 then
+					return false
+				end
+			end
+			x+=1
+		end
+		y+=1
+	end
+	return true
+end
+
+kicks={
+	{0,0},
+	{-1,0},{1,0},
+	{-2,0},{2,0},
+	{0,-1},{-1,-1},{1,-1},
+	{0,-2},{0,-3}
+}
+
 function rotate()
-	if t.shape<4 then
-		t.shape+=1
-	else
-		t.shape=1
+	local s=t.shape+1
+	if s>4 then s=1 end
+	local shape=t.shapes[s]
+	for k in all(kicks) do
+		local pos={
+			x=t.pos.x+k[1],
+			y=t.pos.y+k[2]
+		}
+		if fits(shape,pos) then
+			t.shape=s
+			t.pos=pos
+			return
+		end
 	end
 end
 
