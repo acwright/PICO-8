@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 --tetris
---by ac wright
+--by a.c. wright
 
 --game loop
 
@@ -43,7 +43,7 @@ function _draw()
 	if state==1 then
 		map(16)
 		print("tetris",52,32,7)
-		print("by ac wright",40,40,6)
+		print("by a.c. wright",36,40,6)
 		print("--2019--",48,56,5)
 		print("press ❎ or 🅾️",36,98,7)
 	elseif state==2 then

@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 --platforms
---by ac wright
+--by a.c. wright
 
 function _init()
 	x=10

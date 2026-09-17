@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 --walking
---by ac wright
+--by a.c. wright
 
 function _init()
 	sprite=1

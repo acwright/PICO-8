@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 --dash
---by zander and ac wright
+--by zander and a.c. wright
 
 function _init()
 	player=init_player()

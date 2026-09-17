@@ -120,7 +120,7 @@ function init_credits()
 			{"sounds","chris thompson"},
 			{"levels","daniel heupel"},
 			{"programming","jay deaton"},
-			{"programming","aaron wright"},
+			{"programming","a.c. wright"},
 			{"assistant","river"}
 		},
 		update=function(self)

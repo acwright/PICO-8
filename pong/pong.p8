@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 --pong
---by ac wright
+--by a.c. wright
 
 function _init()
 	state=1
@@ -28,7 +28,7 @@ function _draw()
 	cls()
 	if state==1 then
 		print("pong",56,32,7)
-		print("by ac wright",40,40,6)
+		print("by a.c. wright",36,40,6)
 		print("--2019--",48,56,5)
 		print("press ❎ or 🅾️",36,98,7)
 	elseif state==2 then

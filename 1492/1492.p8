@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 --1492
---by ac wright
+--by a.c. wright
 
 function _init()
 	--init_menu()
